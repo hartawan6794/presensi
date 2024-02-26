@@ -14,12 +14,13 @@ class Presensi extends BaseController
 
 	protected $presensiModel;
 	protected $validation;
+	protected $session;
 
 	public function __construct()
 	{
 		$this->presensiModel = new PresensiModel();
 		$this->validation =  \Config\Services::validation();
-
+        $this->session = \Config\Services::session();
 		helper('settings');
 	}
 
@@ -150,10 +151,10 @@ class Presensi extends BaseController
 
 		// var_dump($this->request->getPost('bulan'));die;
 		$data['bulan'] = $this->request->getPost('bulan');
-		$data['id_user'] = $this->request->getPost('id_user');
+		$data['id_user'] = $this->session->get('id_user');
 		// $fields['tgl_presensi'] = $this->request->getPost('tgl_presensi');
 		// $fields['keterangan'] = $this->request->getPost('keterangan');
-
+		// var_dump($data);die;
 		$this->validation->setRules([
 			'id_user' => ['label' => 'Pengguna', 'rules' => 'permit_empty|min_length[0]|max_length[4]'],
 			'bulan' => ['label' => 'Bulam', 'rules' => 'required', 'errors' => [
@@ -202,7 +203,7 @@ class Presensi extends BaseController
 
 					array_push($fields, array(
 						'tgl_presensi' 	=> $tanggal,
-						'id_user' 		=> '1',
+						'id_user' 		=> $data['id_user'],
 						'keterangan' 	=> $keterangan,
 						'bulan'			=> $bulanPilihan
 					));
