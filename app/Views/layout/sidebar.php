@@ -31,13 +31,13 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?= base_url('rumahsakit') ?>" class="nav-link <?= $seg == 'rumahsakit' ? 'active' : '' ?>">
+                <a href="<?= base_url('presensi') ?>" class="nav-link <?= $seg == 'presensi' ? 'active' : '' ?>">
                   <i class="nav-icon fa fa-bars"></i>
                   <p>Presensi Tahunan</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?= base_url('jabatan') ?>" class="nav-link <?= $seg == 'rumahsakit' ? 'active' : '' ?>">
+                <a href="<?= base_url('jabatan') ?>" class="nav-link <?= $seg == 'jabatan' ? 'active' : '' ?>">
                 <i class="nav-icon fa-solid fa-business-time"></i>
                   <p>Jabatan</p>
                 </a>

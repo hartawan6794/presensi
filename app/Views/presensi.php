@@ -10,7 +10,7 @@
         <h3 class="card-title">Presensi</h3>
       </div>
       <div class="col-3">
-        <button type="button" class="btn float-end btn-success" onclick="save()" title="<?= lang("Tambah") ?>"> <i class="fa fa-plus"></i> <?= lang('Tambah') ?></button>
+        <button type="button" class="btn float-end btn-success" onclick="save()" id="btn-tambah-presensi" title="<?= lang("Tambah") ?>"> <i class="fa fa-plus"></i> <?= lang('Tambah') ?></button>
       </div>
     </div>
   </div>
@@ -141,7 +141,7 @@
 <?= $this->section("pageScript") ?>
 <script>
   // dataTables
-  var bulanValue = 0;
+  var bulanValue = 1;
   $(function() {
     var table = $('#data_table').removeAttr('width').DataTable({
       "paging": true,
@@ -152,7 +152,7 @@
       "processing": true,
       // "serverSide": true,
       "autoWidth": false,
-      "scrollY": '80vh',
+      "scrollY": '45vh',
       "scrollX": true,
       "scrollCollapse": false,
       "responsive": false,
@@ -169,7 +169,17 @@
         "targets": -1, // Aksi pada kolom terakhir
         "data": null,
         "defaultContent": "<button class='btn btn-sm btn-info edit-btn'><i class='fa-solid fa-pen-to-square'> Ubah</button>"
-      }]
+      }],
+      "initComplete": function(settings, json) {
+        // Check if the DataTable has data
+        if (table.data().count() === 0) {
+          $('#btn-tambah-presensi').show();
+          // You can perform actions for an empty table here
+        } else {
+          $('#btn-tambah-presensi').hide();
+          // You can perform actions when the table has data
+        }
+      }
     });
     // Tambahkan event handler untuk tombol edit
     $('#data_table tbody').on('click', 'button.edit-btn', function() {
@@ -180,6 +190,7 @@
 
   var urlController = '';
   var submitText = '';
+  var month = 1;
 
   function getUrl() {
     return urlController;
@@ -189,11 +200,15 @@
     return submitText;
   }
 
+  function getMonth() {
+    return month;
+  }
+
   function editData(data) {
     // Ambil data dari baris yang dipilih dan lakukan proses pengeditan
     // Tampilkan formulir kustom atau gunakan modul lain sesuai kebutuhan
     // Misalnya, Anda dapat menggunakan modal Bootstrap untuk formulir pengeditan
-    console.log("Edit data:", data);
+    // console.log("Edit data:", data);
     // Tampilkan formulir pengeditan atau ambil tindakan lain sesuai kebutuhan
 
     urlController = '<?= base_url($controller . "/edit") ?>';
@@ -278,7 +293,7 @@
 
   function selectMonth(bulan) {
     // Reload DataTable sebelum memanggil AJAX
-
+    month = bulan;
     $.ajax({
       url: '<?php echo base_url($controller . "/getSelectedMonth") ?>',
       type: 'post',
@@ -287,12 +302,13 @@
       },
       dataType: 'json',
       success: function(response) {
-        console.log(response);
+        // console.log(response);
         $('#data_table').DataTable().clear();
         if (response.data.length > 0) {
           $('#data_table').DataTable().rows.add(response.data).draw(false);
+          $('#btn-tambah-presensi').hide();
         } else {
-
+          $('#btn-tambah-presensi').show();
           $('#data_table').DataTable().clear().draw();
         }
       }
@@ -300,59 +316,31 @@
     // });
   }
 
-  function save(id_presensi) {
+  function save() {
     // reset the form 
-    $("#data-form")[0].reset();
-    $(".form-control").removeClass('is-invalid').removeClass('is-valid');
-    if (typeof id_presensi === 'undefined' || id_presensi < 1) { //add
-      urlController = '<?= base_url($controller . "/add") ?>';
-      submitText = '<?= lang("Simpan") ?>';
-      $('#model-header').removeClass('bg-info').addClass('bg-success');
-      $("#info-header-modalLabel").text('<?= lang("Tambah") ?>');
-      $("#form-btn").text(submitText);
-      $('#data-modal').modal('show');
-    } else { //edit
+    console.log(month);
 
-    }
-    $.validator.setDefaults({
-      highlight: function(element) {
-        $(element).addClass('is-invalid').removeClass('is-valid');
-      },
-      unhighlight: function(element) {
-        $(element).removeClass('is-invalid').addClass('is-valid');
-      },
-      errorElement: 'div ',
-      errorClass: 'invalid-feedback',
-      errorPlacement: function(error, element) {
-        if (element.parent('.input-group').length) {
-          error.insertAfter(element.parent());
-        } else if ($(element).is('.select')) {
-          element.next().after(error);
-        } else if (element.hasClass('select2')) {
-          //error.insertAfter(element);
-          error.insertAfter(element.next());
-        } else if (element.hasClass('selectpicker')) {
-          error.insertAfter(element.next());
-        } else {
-          error.insertAfter(element);
-        }
-      },
-      submitHandler: function(form) {
-        var form = $('#data-form');
-        $(".text-danger").remove();
+    Swal.fire({
+      title: "<?= lang("Tambah") ?>",
+      text: "<?= lang("Tambah presensi bulan ini ?") ?>",
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '<?= lang("Konfirmasi") ?>',
+      cancelButtonText: '<?= lang("Batal") ?>'
+    }).then((result) => {
+
+      if (result.value) {
         $.ajax({
-          // fixBug get url from global function only
-          // get global variable is bug!
-          url: getUrl(),
+          url: '<?php echo base_url($controller . "/add") ?>',
           type: 'post',
-          data: form.serialize(),
-          cache: false,
-          dataType: 'json',
-          beforeSend: function() {
-            $('#form-btn').html('<i class="fa fa-spinner fa-spin"></i>');
+          data: {
+            bulan: month
           },
+          dataType: 'json',
           success: function(response) {
-            console.log(response)
+
             if (response.success === true) {
               Swal.fire({
                 toast: true,
@@ -362,43 +350,24 @@
                 showConfirmButton: false,
                 timer: 1500
               }).then(function() {
-                $('#data_table').DataTable().ajax.reload(null, false).draw(false);
-                $('#data-modal').modal('hide');
+                // $('#data_table').DataTable().ajax.reload(null, false).draw(false);
+                selectMonth(month)
               })
             } else {
-              if (response.messages instanceof Object) {
-                $.each(response.messages, function(index, value) {
-                  var ele = $("#" + index);
-                  ele.closest('.form-control')
-                    .removeClass('is-invalid')
-                    .removeClass('is-valid')
-                    .addClass(value.length > 0 ? 'is-invalid' : 'is-valid');
-                  ele.after('<div class="invalid-feedback">' + response.messages[index] + '</div>');
-                });
-              } else {
-                Swal.fire({
-                  toast: false,
-                  position: 'bottom-end',
-                  icon: 'error',
-                  title: response.messages,
-                  showConfirmButton: false,
-                  timer: 3000
-                })
-
-              }
+              Swal.fire({
+                toast: false,
+                position: 'bottom-end',
+                icon: 'error',
+                title: response.messages,
+                showConfirmButton: false,
+                timer: 3000
+              })
             }
-            $('#form-btn').html(getSubmitText());
           }
         });
-        return false;
       }
-    });
-
-    $('#data-form').validate({
-
-      //insert data-form to database
-
-    });
+    })
+    
   }
 
   function remove(id_presensi) {
