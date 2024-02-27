@@ -2,16 +2,19 @@
 
 namespace App\Controllers;
 
+use App\Models\JabatanModel;
 use App\Models\UserModel;
 
 class Login extends BaseController
 {
     protected $user;
     protected $session;
+    protected $jab;
 
     function __construct()
     {
         $this->user = new UserModel();
+        $this->jab = new JabatanModel();
         $this->session = \Config\Services::session();
     }
 
@@ -45,7 +48,7 @@ class Login extends BaseController
                     'isLogin' => true,
                     'id_user' => $data->id_user,
                     'username' => $data->username,
-                    'nama_lengkap' => $data->nama_pengguna,
+                    'nama_lengkap' => $data->nama_lengkap,
                 ];
                 
                 $this->session->set($session);

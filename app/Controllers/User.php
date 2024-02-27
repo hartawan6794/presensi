@@ -57,7 +57,7 @@ class User extends BaseController
 			$data['data'][$key] = array(
 				$no,
 				$value->username,
-				$value->nama_pengguna,
+				$value->nama_lengkap,
 				$value->role,
 				$value->status,
 				$value->jabatan,
@@ -92,7 +92,7 @@ class User extends BaseController
 		$fields['id_user'] = $this->request->getPost('id_user');
 		$fields['username'] = $this->request->getPost('username');
 		$fields['password'] = password_hash($this->request->getPost('password'), PASSWORD_BCRYPT);
-		$fields['nama_pengguna'] = $this->request->getPost('nama_pengguna');
+		$fields['nama_lengkap'] = $this->request->getPost('nama_lengkap');
 		$fields['role'] = $this->request->getPost('role');
 		$fields['status'] = 'inactive';
 		$fields['id_jabatan'] = $this->request->getPost('jabatan');
@@ -108,7 +108,7 @@ class User extends BaseController
 				'required'		=> 'Password tidak boleh kosong',
 				'min_length'	=> 'Minimal panjang password berjumalh 4 karakter',
 			]],
-			'nama_pengguna' => ['label' => 'Nama pengguna', 'rules' => 'required', 'errors' => [
+			'nama_lengkap' => ['label' => 'Nama pengguna', 'rules' => 'required', 'errors' => [
 				'required'		=> 'Harap masukan nama lengkap anda, mau dipanggil siapa anda jika tanpa nama'
 			]],
 			'id_jabatan' => ['label' => 'Jabatan', 'rules' => 'required', 'errors' => [
@@ -145,7 +145,7 @@ class User extends BaseController
 
 		$fields['id_user'] = $this->request->getPost('id_user');
 		$fields['username'] = $this->request->getPost('username');
-		$fields['nama_pengguna'] = $this->request->getPost('nama_pengguna');
+		$fields['nama_lengkap'] = $this->request->getPost('nama_lengkap');
 		$fields['role'] = $this->request->getPost('role');
 		$fields['id_jabatan'] = $this->request->getPost('jabatan');
 
@@ -161,7 +161,7 @@ class User extends BaseController
 				'required'		=> 'Password tidak boleh kosong',
 				'min_length'	=> 'Minimal panjang password berjumalh 4 karakter',
 			]],
-			'nama_pengguna' => ['label' => 'Nama pengguna', 'rules' => 'required', 'errors' => [
+			'nama_lengkap' => ['label' => 'Nama pengguna', 'rules' => 'required', 'errors' => [
 				'required'		=> 'Harap masukan nama lengkap anda, mau dipanggil siapa anda jika tanpa nama'
 			]],
 			'jabatan' => ['label' => 'Jabatan', 'rules' => 'required', 'errors' => [

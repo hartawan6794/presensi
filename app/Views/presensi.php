@@ -318,7 +318,6 @@
 
   function save() {
     // reset the form 
-    console.log(month);
 
     Swal.fire({
       title: "<?= lang("Tambah") ?>",

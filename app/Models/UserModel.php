@@ -10,7 +10,7 @@ class UserModel extends Model {
 	protected $primaryKey = 'id_user';
 	protected $returnType = 'object';
 	protected $useSoftDeletes = false;
-	protected $allowedFields = ['username', 'password', 'nama_pengguna', 'role', 'status', 'id_jabatan'];
+	protected $allowedFields = ['username', 'password', 'nama_lengkap', 'role', 'status', 'id_jabatan'];
 	protected $useTimestamps = false;
 	protected $createdField  = 'created_at';
 	protected $updatedField  = 'updated_at';

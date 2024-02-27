@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Popup Login Form Design | CodingNepal</title>
+    <title>Login Form</title>
     <link rel="stylesheet" href="<?= base_url('asset/css/css.css') ?>">
     <link rel="stylesheet" href="<?= base_url('asset/plugins/fontawesome-free/css/all.min.css') ?>" />
 </head>
@@ -30,7 +30,7 @@
                     <button type="button" id="btn-login">login</button>
                 </div>
                 <div class="signup-link">
-                    Not a member? <a href="#">Signup now</a>
+                    Not a member? <a href="<?= base_url("/registered")?>">Signup now</a>
                 </div>
             </form>
         </div>

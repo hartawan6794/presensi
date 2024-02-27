@@ -21,7 +21,7 @@
         <tr>
           <th>No</th>
           <th>Username</th>
-          <th>Nama pengguna</th>
+          <th>Nama Lengkap</th>
           <th>Role</th>
           <th>Status</th>
           <th>Jabatan</th>
