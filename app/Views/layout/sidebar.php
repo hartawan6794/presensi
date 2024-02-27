@@ -23,25 +23,28 @@
                   </p>
                 </a>
               </li>
-              
+              <?php if(session()->get('role') == 'admin') : ?>
               <li class="nav-item">
                 <a href="<?= base_url('user') ?>" class="nav-link <?= $seg == 'user' ? 'active' : '' ?>">
                   <i class="nav-icon far fa-user"></i>
                   <p>Pengguna</p>
                 </a>
               </li>
+              <?php endif ?>
               <li class="nav-item">
                 <a href="<?= base_url('presensi') ?>" class="nav-link <?= $seg == 'presensi' ? 'active' : '' ?>">
                   <i class="nav-icon fa fa-bars"></i>
                   <p>Presensi Tahunan</p>
                 </a>
               </li>
+              <?php if(session()->get('role') == 'admin') : ?>
               <li class="nav-item">
                 <a href="<?= base_url('jabatan') ?>" class="nav-link <?= $seg == 'jabatan' ? 'active' : '' ?>">
                 <i class="nav-icon fa-solid fa-business-time"></i>
                   <p>Jabatan</p>
                 </a>
               </li>
+              <?php endif ?>
               <li class="nav-item">
                 <a href="<?= base_url('rsia') ?>" class="nav-link <?= $seg == 'rsia' ? 'active' : '' ?>">
                   <i class="nav-icon fa fa-print"></i>

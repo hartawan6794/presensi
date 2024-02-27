@@ -7,8 +7,8 @@
 	<title>Signup Form</title>
 	<link rel="stylesheet" href="<?= base_url('asset/css/css.css') ?>">
 	<link rel="stylesheet" href="<?= base_url('asset/plugins/fontawesome-free/css/all.min.css') ?>" />
-	
-    <link rel="stylesheet" href="<?= base_url('asset/css/adminlte.min.css') ?>">
+
+	<link rel="stylesheet" href="<?= base_url('asset/css/adminlte.min.css') ?>">
 </head>
 
 <body>
@@ -80,53 +80,75 @@
 			// var konfpassword = $('#konfpassword').val();
 			var selectedValue = $('#jabatan').val();
 
-			// console.log(pengguna, ' ', selectedValue, ' ', username, ' ', pass, ' ' , konfpassword)
+			// console.log(pengguna, ' ', selectedValue, ' ', username, ' ', pass)
 
-			registered(pengguna,username,pass,selectedValue);
+			registered(pengguna, username, pass, selectedValue);
 		})
 
-		function registered(pengguna,username,pass,selectedValue) {
+		function registered(pengguna, username, pass, selectedValue) {
 			$.ajax({
-				// fixBug get url from global function only
-				// get global variable is bug!
-				url: '<?= base_url($controller . "/registered") ?>',
-				type: 'post',
-				data: {
-					pengguna: pengguna,
-					username: username,
-					password: pass,
-					valueJab: selectedValue
-				},
-				cache: false,
-				dataType: 'json',
-				beforeSend: function() {
-					$('#btn-signup').html('<i class="fa fa-spinner fa-spin"></i>');
-				},
-				success: function(response) {
-					// if (response.success === true) {
-					// 	Swal.fire({
-					// 		icon: 'success',
-					// 		title: 'Selamat',
-					// 		text: 'Login berhasil'
-					// 	}).then((result) => {
-					// 		if (result.value) {
-					// 			window.location = "<?= base_url('/login') ?>"
-					// 		}
-					// 	})
-					// } else {
-					// 	Swal.fire({
-					// 		toast: false,
-					// 		position: 'bottom-end',
-					// 		icon: 'error',
-					// 		title: response.message,
-					// 		showConfirmButton: false,
-					// 		timer: 3000
-					// 	})
-					// }
-				}
+					// fixBug get url from global function only
+					// get global variable is bug!
+					url: '<?= base_url($controller . "/registered") ?>',
+					type: 'post',
+					data: {
+						pengguna: pengguna,
+						username: username,
+						password: pass,
+						valueJab: selectedValue
+					},
+					cache: false,
+					dataType: 'json',
+					beforeSend: function() {
+						$('#btn-signup').html('<i class="fa fa-spinner fa-spin"></i>');
+					},
+					success: function(response) {
+						console.log(response);
+						if (response.success === true) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Selamat',
+								text: 'Berhasil daftar sebagai asshole'
+							}).then((result) => {
+								if (result.value) {
+									window.location = "<?= base_url('/login') ?>"
+								}
+							})
+						} else {
+							if (response.messages instanceof Object) {
+								$.each(response.messages, function(index, value) {
+									var ele = $("#" + index);
+									console.log(response.messages[index])
+									Swal.fire({
+									toast: false,
+									position: 'bottom-end',
+									icon: 'error',
+									title: response.messages[index],
+									showConfirmButton: false,
+									timer: 3000
+								})
+									// ele.closest('.form-control')
+									// 	.removeClass('is-invalid')
+									// 	.removeClass('is-valid')
+									// 	.addClass(value.length > 0 ? 'is-invalid' : 'is-valid');
+									// ele.after('<div class="invalid-feedback">' + response.messages[index] + '</div>');
+								});
+							} else {
+								Swal.fire({
+									toast: false,
+									position: 'bottom-end',
+									icon: 'error',
+									title: response.messages,
+									showConfirmButton: false,
+									timer: 3000
+								})
+							}
+						}
 
-			})
-		}
+					}
+				})
+				
+			}
 	</script>
 </body>
 

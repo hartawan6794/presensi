@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="icon" href="<?= base_url('hospital.png') ?>">
-    <title>CMS GIS KESEHATAN</title>
+    <title>Presensi Laporan Kerja</title>
     <meta name="description" content="GIS KESEHATAN">
     <meta name="keyword" content="garment,factory,khonkaen,ocomshop">
     <meta name="author" content="nuki">

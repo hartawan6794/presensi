@@ -151,16 +151,16 @@ class User extends BaseController
 
 
 		$this->validation->setRules([
-			'username' => ['label' => 'Username', 'rules' => 'required|min_length[4]|userExist[username]|cekSpasi[username]', 'errors' => [
-				'required'		=> 'Username tidak boleh kosong',
-				'cekSpasi'		=> 'Harap mengisi username tanpa menggunakan spasi',
-				'min_length'	=> 'Minimal panjang username berjumalh 4 karakter',
-				'userExist'		=> 'Username sudah digunakan'
-			]],
-			'password' => ['label' => 'Password', 'rules' => 'required|min_length[4]', 'errors' => [
-				'required'		=> 'Password tidak boleh kosong',
-				'min_length'	=> 'Minimal panjang password berjumalh 4 karakter',
-			]],
+			// 'username' => ['label' => 'Username', 'rules' => 'required|min_length[4]|userExist[username]|cekSpasi[username]', 'errors' => [
+			// 	'required'		=> 'Username tidak boleh kosong',
+			// 	'cekSpasi'		=> 'Harap mengisi username tanpa menggunakan spasi',
+			// 	'min_length'	=> 'Minimal panjang username berjumalh 4 karakter',
+			// 	'userExist'		=> 'Username sudah digunakan'
+			// ]],
+			// 'password' => ['label' => 'Password', 'rules' => 'required|min_length[4]', 'errors' => [
+			// 	'required'		=> 'Password tidak boleh kosong',
+			// 	'min_length'	=> 'Minimal panjang password berjumalh 4 karakter',
+			// ]],
 			'nama_lengkap' => ['label' => 'Nama pengguna', 'rules' => 'required', 'errors' => [
 				'required'		=> 'Harap masukan nama lengkap anda, mau dipanggil siapa anda jika tanpa nama'
 			]],

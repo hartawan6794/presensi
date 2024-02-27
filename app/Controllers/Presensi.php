@@ -90,8 +90,10 @@ class Presensi extends BaseController
 		$response = $data['data'] = array();
 		$bulan = $this->request->getPost('bulan');
 
+		$id_user = $this->session->get('id_user');
+
 		if ($bulan != 0) {
-			$result = $this->presensiModel->select()->where('bulan', $bulan)->join('tbl_user tu', 'tu.id_user = tbl_presensi.id_user')->findAll();
+			$result = $this->presensiModel->select()->where('bulan', $bulan)->join('tbl_user tu', 'tu.id_user = tbl_presensi.id_user')->where('tbl_presensi.id_user', $id_user)->findAll();
 		} else {
 			$result = $this->presensiModel->select()->join('tbl_user tu', 'tu.id_user = tbl_presensi.id_user')->findAll();
 		}
@@ -101,6 +103,7 @@ class Presensi extends BaseController
 		$no = 1;
 		foreach ($result as $key => $value) {
 
+			$ops = $value->id_presensi;
 			// $ops = '<div class="btn-group">';
 			// $ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 			// $ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
@@ -109,22 +112,18 @@ class Presensi extends BaseController
 			// // $ops .= '<div class="dropdown-divider"></div>';
 			// // $ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_presensi . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
 			// $ops .= '</div></div>';
-			$ops = '';
+			// $ops = '';
 
 			$data['data'][$key] = array(
 				$no,
-				$value->nama_pengguna,
+				$value->nama_lengkap,
 				tgl_indo($value->tgl_presensi),
 				$value->keterangan,
-
 				$ops
 			);
 
 			$no++;
 		}
-
-		// var_dump($data);die;
-		// $response['data'] = $data; // Tambahkan data ke response
 
 		return $this->response->setJSON($data);
 	}
@@ -236,7 +235,7 @@ class Presensi extends BaseController
 		$fields['keterangan'] = $this->request->getPost('keterangan');
 		// $fields['id_user'] = '1';
 
-		// var_dump($this->request->getPost('keterangan'));die;
+		// var_dump($fields);die
 
 		$this->validation->setRules([
 			'id_user' => ['label' => 'Pengguna', 'rules' => 'permit_empty|min_length[0]|max_length[4]'],
