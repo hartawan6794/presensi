@@ -19,7 +19,9 @@
     <div class="btn-group">
       <?php
       foreach ($bulan as $nomor => $b) { ?>
-        <button type="button" class="btn btn-info" onclick="selectMonth(<?= $nomor ?>)"><?= $nomor ?></button>
+        <div class="card">
+          <button type="button" class="btn btn-info" onclick="selectMonth(<?= $nomor ?>)"><?= $nomor ?><p><?= $b ?></p></button>
+        </div>
       <?php } ?>
 
     </div>
@@ -33,7 +35,6 @@
           <th>Pengguna</th>
           <th>Tanggal Presensi</th>
           <th>Keterangan</th>
-
           <th></th>
         </tr>
       </thead>
@@ -211,6 +212,7 @@
     // console.log("Edit data:", data);
     // Tampilkan formulir pengeditan atau ambil tindakan lain sesuai kebutuhan
 
+    // console.log(data)
     urlController = '<?= base_url($controller . "/edit") ?>';
     submitText = '<?= lang("Perbarui") ?>';
 
@@ -220,7 +222,7 @@
     // $('#data-modal').modal('show');
     $('#data-modal-edit').modal('show');
     //insert data to form
-    $("#data-modal-edit #edit-form #id_presensi").val(data[0]);
+    $("#data-modal-edit #edit-form #id_presensi").val(data[4]);
     // $("#data-modal-edit #data-form #id_user").val(response.id_user);
     // $("#data-form #tgl_presensi").val(response.tgl_presensi);
     $("#data-modal-edit #edit-form #keterangan").val(data[3]);
@@ -257,7 +259,7 @@
                 showConfirmButton: false,
                 timer: 1500
               }).then(function() {
-                $('#data_table').DataTable().ajax.reload(null, false).draw(false);
+                selectMonth(getMonth())
                 $('#data-modal-edit').modal('hide');
               })
             } else {
@@ -366,7 +368,7 @@
         });
       }
     })
-    
+
   }
 
   function remove(id_presensi) {

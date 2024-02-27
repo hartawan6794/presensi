@@ -57,7 +57,7 @@
               </div>
               <!-- </div>
             <div class="col-md-12"> -->
-              <div class="form-group mb-3">
+              <div class="form-group mb-3" id="form-password">
                 <label for="password" class="col-form-label"> Password: <span class="text-danger">*</span> </label>
                 <div class="input-group">
                   <input type="password" id="password" name="password" class="form-control" placeholder="Password">
@@ -204,11 +204,13 @@
           //insert data to form
           $("#data-form #id_user").val(response.id_user);
           $("#data-form #username").val(response.username);
-          $("#data-form #password").val(response.password);
-          $("#data-form #nama_pengguna").val(response.nama_pengguna);
+          $("#data-form #username").prop('disabled', true);
+          // $("#data-form #password").hide();
+          $("#data-form #form-password").hide();
+          $("#data-form #nama_pengguna").val(response.nama_lengkap);
           $("#data-form #role").val(response.role);
           $("#data-form #status").val(response.status);
-          $("#data-form #jabatan").val(response.jabatan);
+          $("#data-form #jabatan").val(response.id_jabatan);
 
         }
       });

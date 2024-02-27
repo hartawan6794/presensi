@@ -45,10 +45,11 @@ class Login extends BaseController
         if ($data) {
             if ((password_verify($pass, $data->password))) {
                 $session = [
-                    'isLogin' => true,
-                    'id_user' => $data->id_user,
-                    'username' => $data->username,
-                    'nama_lengkap' => $data->nama_lengkap,
+                    'isLogin'       => true,
+                    'id_user'       => $data->id_user,
+                    'username'      => $data->username,
+                    'role'          => $data->role,
+                    'nama_lengkap'  => $data->nama_lengkap,
                 ];
                 
                 $this->session->set($session);
