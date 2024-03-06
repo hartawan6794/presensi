@@ -15,6 +15,7 @@ class Presensi extends BaseController
 	protected $presensiModel;
 	protected $validation;
 	protected $session;
+    protected $month;
 
 	public function __construct()
 	{
@@ -22,68 +23,20 @@ class Presensi extends BaseController
 		$this->validation =  \Config\Services::validation();
         $this->session = \Config\Services::session();
 		helper('settings');
+        $this->month    = config('VarMonth');
 	}
 
 	public function index()
 	{
 
-		$bulan = array(
-			1 => "Januari",
-			2 => "Februari",
-			3 => "Maret",
-			4 => "April",
-			5 => "Mei",
-			6 => "Juni",
-			7 => "Juli",
-			8 => "Agustus",
-			9 => "September",
-			10 => "Oktober",
-			11 => "November",
-			12 => "Desember"
-		);
-
-		// var_dump($bulan);die;
 		$data = [
 			'controller'    	=> 'presensi',
 			'title'     		=> 'Daftar Presensi',
-			'bulan'				=> $bulan
+			'bulan'				=> $this->month
 		];
 
 		return view('presensi', $data);
 	}
-
-	// public function getAll()
-	// {
-	// 	$response = $data['data'] = array();
-
-	// 	$result = $this->presensiModel->select()->findAll();
-
-	// 	$no = 1;
-	// 	foreach ($result as $key => $value) {
-
-	// 		$ops = '<div class="btn-group">';
-	// 		$ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-	// 		$ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
-	// 		$ops .= '<div class="dropdown-menu">';
-	// 		$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_presensi . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
-	// 		$ops .= '<div class="dropdown-divider"></div>';
-	// 		$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_presensi . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
-	// 		$ops .= '</div></div>';
-
-	// 		$data['data'][$key] = array(
-	// 			$no,
-	// 			$value->id_user,
-	// 			tgl_indo($value->tgl_presensi),
-	// 			$value->keterangan,
-
-	// 			$ops
-	// 		);
-
-	// 		$no++;
-	// 	}
-
-	// 	return $this->response->setJSON($data);
-	// }
 
 	public function getSelectedMonth()
 	{
@@ -104,15 +57,6 @@ class Presensi extends BaseController
 		foreach ($result as $key => $value) {
 
 			$ops = $value->id_presensi;
-			// $ops = '<div class="btn-group">';
-			// $ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-			// $ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
-			// $ops .= '<div class="dropdown-menu">';
-			// $ops .= '<a class="dropdown-item text-info" onClick="edit(' . $value->id_presensi . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
-			// // $ops .= '<div class="dropdown-divider"></div>';
-			// // $ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_presensi . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
-			// $ops .= '</div></div>';
-			// $ops = '';
 
 			$data['data'][$key] = array(
 				$no,
@@ -148,12 +92,16 @@ class Presensi extends BaseController
 	{
 		$response = array();
 
+
 		// var_dump($this->request->getPost('bulan'));die;
 		$data['bulan'] = $this->request->getPost('bulan');
 		$data['id_user'] = $this->session->get('id_user');
-		// $fields['tgl_presensi'] = $this->request->getPost('tgl_presensi');
-		// $fields['keterangan'] = $this->request->getPost('keterangan');
-		// var_dump($data);die;
+		
+		$this->presensiModel->where([
+			'id_user' 		=> $data['id_user'],
+			'bulan' 		=> $data['bulan'],
+		])->delete();
+
 		$this->validation->setRules([
 			'id_user' => ['label' => 'Pengguna', 'rules' => 'permit_empty|min_length[0]|max_length[4]'],
 			'bulan' => ['label' => 'Bulam', 'rules' => 'required', 'errors' => [

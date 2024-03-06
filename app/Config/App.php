@@ -174,4 +174,9 @@ class App extends BaseConfig
      * @see http://www.w3.org/TR/CSP/
      */
     public bool $CSPEnabled = false;
+
+    public $aliases = [
+        'varMonth' => \Config\VarMonth::class,
+    ];
+    
 }
