@@ -18,7 +18,7 @@
   <div class="card-body">
     <div class="btn-group">
       <?php
-      foreach ($bulan as $nomor => $b) { ?>
+      foreach ($bulan->bulan as $nomor => $b) { ?>
         <div class="card">
           <button type="button" class="btn btn-info" onclick="selectMonth(<?= $nomor ?>)"><?= $nomor ?><p><?= $b ?></p></button>
         </div>
@@ -64,7 +64,7 @@
                 <label for="bulan" class="col-form-label"> Bulan: </label>
                 <select name="bulan" id="bulan" class="form-control">
                   <option value="">--Pilih Bulan--</option>
-                  <?php foreach ($bulan as $nomor => $b) : ?>
+                  <?php foreach ($bulan->bulan as $nomor => $b) : ?>
                     <option value="<?= $nomor ?>"><?= $b ?></option>
                   <?php endforeach; ?>
                 </select>
@@ -304,7 +304,7 @@
       },
       dataType: 'json',
       success: function(response) {
-        // console.log(response);
+        // console.log(response.data);
         $('#data_table').DataTable().clear();
         if (response.data.length > 0) {
           $('#data_table').DataTable().rows.add(response.data).draw(false);
