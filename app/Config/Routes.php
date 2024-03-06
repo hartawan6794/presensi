@@ -5,6 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+ $routes->get('/',  'Home::index',['filter' => 'auth']);
  $routes->get('/home',  'Home::index',['filter' => 'auth']);
  $routes->get('/presensi',  'Presensi::index',['filter' => 'auth']);
  $routes->get('/user',  'User::index',['filter' => 'auth']);
