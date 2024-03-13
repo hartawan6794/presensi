@@ -49,6 +49,7 @@ class Laporan extends BaseController
         ])->join('tbl_user tu', 'tu.id_user = tbl_presensi.id_user')->findAll();
 
         $no = 1;
+        $data['data'] = array();
 		foreach ($presensis as $key => $value) {
 
 			$data['data'][$key] = array(
