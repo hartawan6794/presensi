@@ -207,7 +207,7 @@
           $("#data-form #username").prop('disabled', true);
           // $("#data-form #password").hide();
           $("#data-form #form-password").hide();
-          $("#data-form #nama_pengguna").val(response.nama_lengkap);
+          $("#data-form #nama_lengkap").val(response.nama_lengkap);
           $("#data-form #role").val(response.role);
           $("#data-form #status").val(response.status);
           $("#data-form #jabatan").val(response.id_jabatan);
