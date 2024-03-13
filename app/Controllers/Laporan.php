@@ -25,7 +25,7 @@ class Laporan extends BaseController
 
     public function index(): string
     {
-        $users = $this->users->where('role !=', 'admin')->findAll();
+        $users = $this->users->findAll();
 
         $data = [
             'controller'        => 'laporan',
@@ -61,8 +61,6 @@ class Laporan extends BaseController
 
 			$no++;
 		}
-
-        // var_dump($data);die;
 
         return $this->response->setJSON($data);
     }

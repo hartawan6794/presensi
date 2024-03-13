@@ -71,8 +71,8 @@
             </div>
             <div class="col-md-12">
               <div class="form-group mb-3">
-                <label for="nama_pengguna" class="col-form-label"> Nama Lengkap: </label>
-                <input type="text" id="nama_pengguna" name="nama_pengguna" class="form-control" placeholder="Nama pengguna" minlength="0" maxlength="150">
+                <label for="nama_lengkap" class="col-form-label"> Nama Lengkap: </label>
+                <input type="text" id="nama_lengkap" name="nama_lengkap" class="form-control" placeholder="Nama Lengkap" minlength="0" maxlength="150">
               </div>
             </div>
             <div class="col-md-12">

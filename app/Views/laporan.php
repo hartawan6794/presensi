@@ -31,7 +31,9 @@
                   <select name="user" id="user" class="form-control">
                     <option value="">--Pilih Pegawai--</option>
                     <?php foreach ($users as $user) : ?>
-                      <option value="<?= $user->id_user ?>"><?= $user->nama_lengkap ?></option>
+                      <?php if ($user->role != 'admin') : ?>
+                        <option value="<?= $user->id_user ?>"><?= $user->nama_lengkap ?></option>
+                      <?php endif ?>
                     <?php endforeach; ?>
                   </select>
                 </div>
@@ -145,6 +147,27 @@
             // }else{
             //   alert('Data belum di tambahkan')
             // }
+          },
+          error: function(xhr, textStatus, errorThrown) {
+            // Tangani error di sini
+            if (xhr.status == 500) {
+              // Error 500, tangani sesuai kebutuhan Anda
+              alert('Terjadi kesalahan internal server. Silakan coba lagi nanti.');
+            } else {
+              // Error lainnya, tangani sesuai kebutuhan Anda
+              alert('Terjadi kesalahan: ' + textStatus);
+            }
+
+            // Bersihkan tabel jika terjadi error
+            $('#data_table').DataTable().clear().draw(true);
+          },
+          statusCode: {
+            500: function() {
+              // Handle error 500 jika diperlukan
+              // alert('Terjadi kesalahan internal server. Silakan coba lagi nanti.');
+              $('#data_table').DataTable().clear().draw(true);
+            }
+            // Anda dapat menambahkan penanganan kode status lain di sini jika diperlukan
           }
         });
       }
