@@ -46,13 +46,13 @@
                     <p>Jabatan</p>
                   </a>
                 </li>
+                <li class="nav-item">
+                  <a href="<?= base_url('laporan') ?>" class="nav-link <?= $seg == 'laporan' ? 'active' : '' ?>">
+                    <i class="nav-icon fa fa-print"></i>
+                    <p>Laporan Presensi</p>
+                  </a>
+                </li>
               <?php endif ?>
-              <li class="nav-item">
-                <a href="<?= base_url('laporan') ?>" class="nav-link <?= $seg == 'laporan' ? 'active' : '' ?>">
-                  <i class="nav-icon fa fa-print"></i>
-                  <p>Laporan Presensi</p>
-                </a>
-              </li>
 
           </nav>
         </div>
