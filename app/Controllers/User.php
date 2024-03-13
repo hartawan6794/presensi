@@ -144,10 +144,12 @@ class User extends BaseController
 		$response = array();
 
 		$fields['id_user'] = $this->request->getPost('id_user');
-		$fields['username'] = $this->request->getPost('username');
+		// $fields['username'] = $this->request->getPost('username');
 		$fields['nama_lengkap'] = $this->request->getPost('nama_lengkap');
 		$fields['role'] = $this->request->getPost('role');
 		$fields['id_jabatan'] = $this->request->getPost('jabatan');
+
+		// var_dump($fields['id_jabatan']);die;
 
 
 		$this->validation->setRules([
@@ -164,7 +166,7 @@ class User extends BaseController
 			'nama_lengkap' => ['label' => 'Nama pengguna', 'rules' => 'required', 'errors' => [
 				'required'		=> 'Harap masukan nama lengkap anda, mau dipanggil siapa anda jika tanpa nama'
 			]],
-			'jabatan' => ['label' => 'Jabatan', 'rules' => 'required', 'errors' => [
+			'id_jabatan' => ['label' => 'Jabatan', 'rules' => 'required', 'errors' => [
 				'required'		=> 'Harap masukan jabatan anda jika masih ingin kerja'
 			]],
 
