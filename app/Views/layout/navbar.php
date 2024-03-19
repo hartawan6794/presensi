@@ -21,7 +21,7 @@
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
           <!-- User image -->
           <li class="user-header bg-dark">
-            <img src="<?= base_url('/asset/img/user.jpg') ?>" class="img-circle shadow" alt="User Image">
+            <img src="<?= session()->get('img_user') ? base_url('/img/user/'.session()->get('img_user')) : base_url('/asset/img/user.jpg') ?>" class="img-circle shadow" alt="User Image">
 
             <p>
               <?= session()->get('nama_lengkap') ?>

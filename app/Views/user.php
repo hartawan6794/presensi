@@ -83,16 +83,9 @@
                   <?php foreach ($role as $key => $r) : ?>
                     <option value="<?= $r ?>"><?= ucfirst($r) ?></option>
                   <?php endforeach ?>
-
                 </select>
               </div>
             </div>
-            <!-- <div class="col-md-12">
-              <div class="form-group mb-3">
-                <label for="status" class="col-form-label"> Status: </label>
-                <input type="text" id="status" name="status" class="form-control" placeholder="Status" minlength="0" maxlength="&#39;active&#39;">
-              </div>
-            </div> -->
             <div class="col-md-12">
               <div class="form-group mb-3">
                 <label for="jabatan" class="col-form-label"> Jabatan: </label>
@@ -101,12 +94,16 @@
                   <?php foreach ($jabatan as $jab) : ?>
                     <option value="<?= $jab->id_jabatan ?>"><?= $jab->jabatan ?></option>
                   <?php endforeach ?>
-
                 </select>
               </div>
             </div>
+            <div class="col-md-12">
+              <div class="form-group mb-3">
+                <label for="photo" class="col-form-label"> Photo: </label>
+                <input type="file" id="photo" name="photo" class="form-control" placeholder="Nama Lengkap">
+              </div>
+            </div>
           </div>
-
           <div class="form-group text-center">
             <div class="btn-group">
               <button type="submit" class="btn btn-success mr-2" id="form-btn"><?= lang("Simpan") ?></button>
@@ -239,14 +236,16 @@
         }
       },
       submitHandler: function(form) {
-        var form = $('#data-form');
+        // var form = $('#data-form');
         $(".text-danger").remove();
         $.ajax({
           // fixBug get url from global function only
           // get global variable is bug!
           url: getUrl(),
           type: 'post',
-          data: form.serialize(),
+          data: new FormData(form),
+          processData: false,
+          contentType: false,
           cache: false,
           dataType: 'json',
           beforeSend: function() {
