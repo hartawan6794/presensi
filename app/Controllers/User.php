@@ -147,6 +147,12 @@ class User extends BaseController
 		$fields['nama_lengkap'] = $this->request->getPost('nama_lengkap');
 		$fields['role'] = $this->request->getPost('role');
 		$fields['id_jabatan'] = $this->request->getPost('jabatan');
+		$fields['photo'] = $this->request->getFile('photo');
+		// var_dump($fields);die;
+
+		$data = $this->userModel->select('img_user')->where('id_user', $fields['id_user'])->first();
+
+		// var_dump($data);die;
 
 		$this->validation->setRules([
 			'nama_lengkap' => ['label' => 'Nama pengguna', 'rules' => 'required', 'errors' => [
@@ -155,6 +161,15 @@ class User extends BaseController
 			'id_jabatan' => ['label' => 'Jabatan', 'rules' => 'required', 'errors' => [
 				'required'		=> 'Harap masukan jabatan anda jika masih ingin kerja'
 			]],
+			'photo' => [
+				'label' => 'photo',
+				'rules' => 'is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 2Mb',
+					'mime_in' => 'Harap masukkan file berupa photo (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa photo'
+				]
+			],
 
 		]);
 
@@ -165,15 +180,15 @@ class User extends BaseController
 
 		} else {
 
-			if ($this->userModel->update($fields['id_user'], $fields)) {
+			// if ($this->userModel->update($fields['id_user'], $fields)) {
 
-				$response['success'] = true;
-				$response['messages'] = lang("Berhasil perbarui data");
-			} else {
+			// 	$response['success'] = true;
+			// 	$response['messages'] = lang("Berhasil perbarui data");
+			// } else {
 
-				$response['success'] = false;
-				$response['messages'] = lang("Gagal Perbarui data");
-			}
+			// 	$response['success'] = false;
+			// 	$response['messages'] = lang("Gagal Perbarui data");
+			// }
 		}
 
 		return $this->response->setJSON($response);
