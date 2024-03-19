@@ -18,19 +18,19 @@
             </div>
             <form>
                 <div class="data">
-                    <label for="username">username</label>
-                    <input type="text" id="username" placeholder="Please enter your username">
+                    <label for="username">Nama Pengguna : </label>
+                    <input type="text" id="username" placeholder="Masukan nama pengguna anda">
                 </div>
                 <div class="data">
-                    <label for="password">Password</label>
-                    <input type="password" id="pass" placeholder="Please enter your passowrd">
+                    <label for="sandi">Kata Sandi : </label>
+                    <input type="password" id="sandi" placeholder="Masukan kata sandi anda">
                 </div>
                 <div class="btn">
                     <div class="inner"></div>
                     <button type="button" id="btn-login">login</button>
                 </div>
                 <div class="signup-link">
-                    Not a member? <a href="<?= base_url("/registered")?>">Signup now</a>
+                    Belum punya akun? <a href="<?= base_url("/registered") ?>">Daftar sekarang</a>
                 </div>
             </form>
         </div>
@@ -40,9 +40,9 @@
     <script src="<?= base_url('asset/js/sweetalert2.all.min.js') ?>"></script>
 
     <script>
-        $("#username, #password").keydown(function(event) {
+        $("#username, #sandi").keydown(function(event) {
             var username = $('#username').val();
-            var pass = $('#pass').val();
+            var pass = $('#sandi').val();
             if (event.which == 13) { // Tombol "Enter" memiliki kode 13
                 event.preventDefault(); // Mencegah pengiriman formulir
                 login(username, pass);
@@ -51,7 +51,7 @@
         $('#btn-login').click(function() {
             // event.preventDefault();
             var username = $('#username').val();
-            var pass = $('#pass').val();
+            var pass = $('#sandi').val();
 
             // console.log(username, ' ', pass)
 
@@ -92,6 +92,8 @@
                             title: response.message,
                             showConfirmButton: false,
                             timer: 3000
+                        }).then((result) => {
+                            $('#btn-login').html('Login')
                         })
                     }
                 }

@@ -36,20 +36,18 @@ class Login extends BaseController
         $username = $this->request->getPost('username');
         $pass = $this->request->getPost('password');
 
-        $data = $this->user->where('username',$username)->first();
+        $data = $this->user->join('tbl_jabatan tb','tb.id_jabatan = tbl_user.id_jabatan')->where('username',$username)->first();
         
-        // Read new token and assign in $data['token']
-        // Membaca token baru dan menetapkannya ke dalam properti 'token' pada objek
-        // $data->token = csrf_hash();
-        // var_dump($data);die;
         if ($data) {
             if ((password_verify($pass, $data->password))) {
                 $session = [
                     'isLogin'       => true,
                     'id_user'       => $data->id_user,
                     'username'      => $data->username,
+                    'jabatan'       => $data->jabatan,
                     'role'          => $data->role,
                     'nama_lengkap'  => $data->nama_lengkap,
+                    'img_user'      => $data->img_user
                 ];
                 
                 $this->session->set($session);
@@ -61,7 +59,7 @@ class Login extends BaseController
             }
         } else {
             $response['success'] = false;
-            $response['message'] = "Email tidak terdaftar";
+            $response['message'] = "Username tidak terdaftar";
         }
 
         return $this->response->setJSON($response);

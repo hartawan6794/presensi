@@ -9,39 +9,42 @@ use App\Models\UserModel;
 class Registered extends BaseController
 {
 
-  protected $jab;
+	protected $jab;
 	protected $validation;
-  protected $user;
-  function __construct()
-  {
-    $this->jab = new JabatanModel();
-    $this->user = new UserModel();
+	protected $user;
+	function __construct()
+	{
+		$this->jab = new JabatanModel();
+		$this->user = new UserModel();
 		$this->validation =  \Config\Services::validation();
-  }
+	}
 
-  public function index()
-  {
+	public function index()
+	{
 
-    $dataJab = $this->jab->findAll();
+		$dataJab = $this->jab->findAll();
 
-    $data  = [ 
-      'controller'    => 'registered',
-      'title'         => 'registered',
-      'dataJab'       => $dataJab
-    ];
-    return view('registered', $data);
-  }
+		$data  = [
+			'controller'    => 'registered',
+			'title'         => 'registered',
+			'dataJab'       => $dataJab
+		];
+		return view('registered', $data);
+	}
 
-  public function registered(){
-    $fields['username'] = $this->request->getPost('username');
+	public function registered()
+	{
+		$fields['username'] = $this->request->getPost('username');
 		$fields['password'] = password_hash($this->request->getPost('password'), PASSWORD_BCRYPT);
 		$fields['nama_lengkap'] = $this->request->getPost('pengguna');
 		$fields['role'] = 'pegawai';
 		$fields['status'] = 'inactive';
-		$fields['id_jabatan'] = $this->request->getPost('valueJab');
-			// var_dump($fields);die;
+		$fields['id_jabatan'] = $this->request->getPost('jabatan');
+		$fields['photo'] = $this->request->getFile('photo');
+		// var_dump($fields);
+		// die;
 
-    $this->validation->setRules([
+		$this->validation->setRules([
 			'username' => ['label' => 'Username', 'rules' => 'required|min_length[4]|userExist[username]|cekSpasi[username]', 'errors' => [
 				'required'		=> 'Username tidak boleh kosong',
 				'cekSpasi'		=> 'Harap mengisi username tanpa menggunakan spasi',
@@ -58,6 +61,15 @@ class Registered extends BaseController
 			'id_jabatan' => ['label' => 'Jabatan', 'rules' => 'required', 'errors' => [
 				'required'		=> 'Harap masukan jabatan anda jika masih ingin kerja'
 			]],
+			'photo' => [
+				'label' => 'photo',
+				'rules' => 'uploaded[photo]|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 2Mb',
+					'mime_in' => 'Harap masukkan file berupa photo (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa photo'
+				]
+			],
 
 		]);
 
@@ -67,7 +79,13 @@ class Registered extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
-			// var_dump($fields);die;
+			if ($fields['photo']->getName() != '') {
+
+				$fileName = 'pengguna-' . $fields['photo']->getRandomName();
+				$fields['img_user'] = $fileName;
+				$fields['photo']->move(WRITEPATH . '../public/img/user', $fileName);
+				unset($fields['photo']);
+			}
 
 			if ($this->user->insert($fields)) {
 
@@ -81,6 +99,5 @@ class Registered extends BaseController
 		}
 
 		return $this->response->setJSON($response);
-  }
-
+	}
 }
