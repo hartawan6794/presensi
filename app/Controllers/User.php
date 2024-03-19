@@ -144,25 +144,11 @@ class User extends BaseController
 		$response = array();
 
 		$fields['id_user'] = $this->request->getPost('id_user');
-		// $fields['username'] = $this->request->getPost('username');
 		$fields['nama_lengkap'] = $this->request->getPost('nama_lengkap');
 		$fields['role'] = $this->request->getPost('role');
 		$fields['id_jabatan'] = $this->request->getPost('jabatan');
 
-		// var_dump($fields['id_jabatan']);die;
-
-
 		$this->validation->setRules([
-			// 'username' => ['label' => 'Username', 'rules' => 'required|min_length[4]|userExist[username]|cekSpasi[username]', 'errors' => [
-			// 	'required'		=> 'Username tidak boleh kosong',
-			// 	'cekSpasi'		=> 'Harap mengisi username tanpa menggunakan spasi',
-			// 	'min_length'	=> 'Minimal panjang username berjumalh 4 karakter',
-			// 	'userExist'		=> 'Username sudah digunakan'
-			// ]],
-			// 'password' => ['label' => 'Password', 'rules' => 'required|min_length[4]', 'errors' => [
-			// 	'required'		=> 'Password tidak boleh kosong',
-			// 	'min_length'	=> 'Minimal panjang password berjumalh 4 karakter',
-			// ]],
 			'nama_lengkap' => ['label' => 'Nama pengguna', 'rules' => 'required', 'errors' => [
 				'required'		=> 'Harap masukan nama lengkap anda, mau dipanggil siapa anda jika tanpa nama'
 			]],

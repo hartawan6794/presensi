@@ -31,5 +31,19 @@ if(!function_exists('settings')){
         return $tanggal[0] == 0  ? "Belum di set"  : $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
     }
 
+    function hariIndonesia($englishDay) {
+        $hari = array(
+            'Monday'    => 'Senin',
+            'Tuesday'   => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday'  => 'Kamis',
+            'Friday'    => 'Jumat',
+            'Saturday'  => 'Sabtu',
+            'Sunday'    => 'Minggu'
+        );
+    
+        return isset($hari[$englishDay]) ? $hari[$englishDay] : $englishDay;
+    }
+
 }
 ?>

@@ -15,15 +15,15 @@ class Presensi extends BaseController
 	protected $presensiModel;
 	protected $validation;
 	protected $session;
-    protected $month;
+	protected $month;
 
 	public function __construct()
 	{
 		$this->presensiModel = new PresensiModel();
 		$this->validation =  \Config\Services::validation();
-        $this->session = \Config\Services::session();
+		$this->session = \Config\Services::session();
 		helper('settings');
-        $this->month    = config('VarMonth');
+		$this->month    = config('VarMonth');
 	}
 
 	public function index()
@@ -45,13 +45,7 @@ class Presensi extends BaseController
 
 		$id_user = $this->session->get('id_user');
 
-		if ($bulan != 0) {
-			$result = $this->presensiModel->select()->where('bulan', $bulan)->join('tbl_user tu', 'tu.id_user = tbl_presensi.id_user')->where('tbl_presensi.id_user', $id_user)->findAll();
-		} else {
-			$result = $this->presensiModel->select()->join('tbl_user tu', 'tu.id_user = tbl_presensi.id_user')->findAll();
-		}
-
-		// var_dump($result);die;
+		$result = $this->presensiModel->select()->where('bulan', $bulan)->where('tbl_presensi.id_user', $id_user)->findAll();
 
 		$no = 1;
 		foreach ($result as $key => $value) {
@@ -60,7 +54,7 @@ class Presensi extends BaseController
 
 			$data['data'][$key] = array(
 				$no,
-				$value->nama_lengkap,
+				hariIndonesia(date('l', strtotime($value->tgl_presensi))),
 				tgl_indo($value->tgl_presensi),
 				$value->keterangan,
 				$ops
@@ -96,7 +90,7 @@ class Presensi extends BaseController
 		// var_dump($this->request->getPost('bulan'));die;
 		$data['bulan'] = $this->request->getPost('bulan');
 		$data['id_user'] = $this->session->get('id_user');
-		
+
 		$this->presensiModel->where([
 			'id_user' 		=> $data['id_user'],
 			'bulan' 		=> $data['bulan'],

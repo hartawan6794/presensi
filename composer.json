@@ -11,7 +11,9 @@
     },
     "require": {
         "php": "^7.4 || ^8.0",
-        "codeigniter4/framework": "^4.0"
+        "codeigniter4/framework": "^4.0",
+        "setasign/fpdf": "1.8",
+        "tecnickcom/tcpdf": "^6.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",

@@ -10,7 +10,7 @@
         <h3 class="card-title">Presensi</h3>
       </div>
       <div class="col-3">
-        <button type="button" class="btn float-end btn-success" onclick="save()" id="btn-tambah-presensi" title="<?= lang("Tambah") ?>"> <i class="fa fa-plus"></i> <?= lang('Tambah') ?></button>
+        <button type="button" style="display: none;" class="btn float-end btn-success" onclick="save()" id="btn-tambah-presensi" title="<?= lang("Tambah") ?>"> <i class="fa fa-plus"></i> <?= lang('Tambah') ?></button>
       </div>
     </div>
   </div>
@@ -23,7 +23,11 @@
           <button type="button" class="btn btn-info" onclick="selectMonth(<?= $nomor ?>)"><?= $nomor ?><p><?= $b ?></p></button>
         </div>
       <?php } ?>
+    </div>
 
+    <div class="col-md-3">
+      <!-- <button type="text" id></button> -->
+      <button type="button" class="btn btn-warning" style="display: none;" onclick="cetak()" id="btn-cetak-presensi" title="<?= lang("Cetak") ?>"> <i class="fa fa-print"></i> <?= lang('Cetak') ?></button>
     </div>
   </div>
   <!-- /.card-header -->
@@ -32,7 +36,7 @@
       <thead>
         <tr>
           <th>No</th>
-          <th>Pengguna</th>
+          <th>Hari</th>
           <th>Tanggal Presensi</th>
           <th>Keterangan</th>
           <th></th>
@@ -55,9 +59,6 @@
       </div>
       <div class="modal-body">
         <form id="data-form" class="pl-3 pr-3">
-          <!-- <div class="row">
-            <input type="hidden" id="id_presensi" name="id_presensi" class="form-control" placeholder="Id presensi" maxlength="4" required>
-          </div> -->
           <div class="row">
             <div class="col-md-12">
               <div class="form-group mb-3">
@@ -70,20 +71,7 @@
                 </select>
               </div>
             </div>
-            <!-- <div class="col-md-12">
-              <div class="form-group mb-3">
-                <label for="tgl_presensi" class="col-form-label"> Tanggal Presensi: </label>
-                <input type="date" id="tgl_presensi" name="tgl_presensi" class="form-control" dateISO="true">
-              </div>
-            </div>
-            <div class="col-md-12">
-              <div class="form-group mb-3">
-                <label for="keterangan" class="col-form-label"> Keterangan: </label>
-                <input type="text" id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" minlength="0" maxlength="255">
-              </div>
-            </div> -->
           </div>
-
           <div class="form-group text-center">
             <div class="btn-group">
               <button type="submit" class="btn btn-success mr-2" id="form-btn"><?= lang("Simpan") ?></button>
@@ -175,9 +163,11 @@
         // Check if the DataTable has data
         if (table.data().count() === 0) {
           $('#btn-tambah-presensi').show();
+          $('#btn-cetak-presensi').hide();
           // You can perform actions for an empty table here
         } else {
           $('#btn-tambah-presensi').hide();
+          $('#btn-cetak-presensi').show();
           // You can perform actions when the table has data
         }
       }
@@ -231,16 +221,10 @@
     // $("#notif-form #id_pembayaran").val(id_pembayaran);
     $("#data-modal-edit").validate({
       submitHandler: function(form) {
-        // event.preventDefault(); // Mencegah pengiriman formulir
 
         var form = $('#edit-form');
         $(".text-danger").remove();
-        // Mendapatkan data formulir dalam bentuk string URL-encoded
-        // var formData = $(this).serialize();
-        // console.log(getUrl())
         $.ajax({
-          // fixBug get url from global function only
-          // get global variable is bug!
           url: getUrl(),
           type: 'post',
           data: form.serialize(),
@@ -309,8 +293,10 @@
         if (response.data.length > 0) {
           $('#data_table').DataTable().rows.add(response.data).draw(false);
           $('#btn-tambah-presensi').hide();
+          $('#btn-cetak-presensi').show();
         } else {
           $('#btn-tambah-presensi').show();
+          $('#btn-cetak-presensi').hide();
           $('#data_table').DataTable().clear().draw();
         }
       }
@@ -418,6 +404,23 @@
         });
       }
     })
+  }
+
+  function cetak() {
+    var bulan = getMonth()
+    $.ajax({
+      url: '<?php echo base_url("laporan/cetak") ?>',
+      type: 'post',
+      data: {
+        bulan: bulan
+      },
+      dataType: 'json',
+      cache : false,
+      success: function(response) {
+        // window.location.href = 
+
+      }
+    });
   }
 </script>
 

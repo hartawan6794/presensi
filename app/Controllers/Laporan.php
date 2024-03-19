@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\PresensiModel;
 use App\Models\UserModel;
 use Config\Session;
+use TCPDF;
+use FPDF;
 
 class Laporan extends BaseController
 {
@@ -19,7 +21,7 @@ class Laporan extends BaseController
         $this->users    = new UserModel();
         $this->session  = session();
         $this->month    = config('VarMonth');
-		helper('settings');
+        helper('settings');
         $this->presensi = new PresensiModel();
     }
 
@@ -37,7 +39,8 @@ class Laporan extends BaseController
     }
 
 
-    public function show(){
+    public function show()
+    {
         $response = array();
 
         $id_user    = $this->request->getPost('user');
@@ -50,20 +53,53 @@ class Laporan extends BaseController
 
         $no = 1;
         $data['data'] = array();
-		foreach ($presensis as $key => $value) {
+        foreach ($presensis as $key => $value) {
 
-			$data['data'][$key] = array(
-				$no,
-				$value->nama_lengkap,
-				tgl_indo($value->tgl_presensi),
-				$value->keterangan,
-				// $ops
-			);
+            $data['data'][$key] = array(
+                $no,
+                $value->nama_lengkap,
+                tgl_indo($value->tgl_presensi),
+                $value->keterangan,
+                // $ops
+            );
 
-			$no++;
-		}
+            $no++;
+        }
 
         return $this->response->setJSON($data);
     }
+
+    public function cetak()
+    {
+        
+        $fields['id_user']  = $this->request->getPost('id_user') ? $this->request->getPost('id_user') : session()->get('id_user');
+        $fields['bulan']    = $this->request->getPost('bulan');
+
+        $data = $this->presensi->select('tbl_presensi.tgl_presensi,tbl_presensi.keterangan,tbl_presensi.bulan,tu.nama_lengkap')->join('tbl_user tu','tu.id_user = tbl_presensi.id_user')->where([
+            'tu.id_user'   => $fields['id_user'],
+            'bulan'     => $fields['bulan']
+        ])->findAll();
+
+
+        foreach($data as $d){
+            var_dump(hariIndonesia(date('l', strtotime($d->tgl_presensi))));
+        }
+
+        die;
+
+
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->Cell(40, 10, 'Hello World!');;
+
+        //         // Simpan output PDF ke dalam file
+        $pdfContent = $pdf->Output('', 'S');
+        $filePath = WRITEPATH . '../public/laporan/laporan-' . $fields['id_user'] . '-' . $fields['bulan'] . '.pdf';
+
+        //         // Tentukan lokasi dan nama file
+
+        //         // Tulis konten PDF ke dalam file
+        file_put_contents($filePath, $pdfContent);
+    }
 }
-?>
