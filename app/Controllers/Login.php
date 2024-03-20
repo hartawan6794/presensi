@@ -37,9 +37,13 @@ class Login extends BaseController
         $pass = $this->request->getPost('password');
 
         $data = $this->user->join('tbl_jabatan tb','tb.id_jabatan = tbl_user.id_jabatan')->where('username',$username)->first();
+        // var_dump($data->password);
+        // var_dump($pass);
+        // var_dump(password_verify($pass,$data->password));
+        // die;
         
         if ($data) {
-            if ((password_verify($pass, $data->password))) {
+            if (password_verify($pass, $data->password)) {
                 $session = [
                     'isLogin'       => true,
                     'id_user'       => $data->id_user,

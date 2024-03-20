@@ -35,7 +35,7 @@ class Registered extends BaseController
 	public function registered()
 	{
 		$fields['username'] = $this->request->getPost('username');
-		$fields['password'] = password_hash($this->request->getPost('password'), PASSWORD_BCRYPT);
+		$fields['password'] = password_hash($this->request->getPost('pass'), PASSWORD_BCRYPT);
 		$fields['nama_lengkap'] = $this->request->getPost('pengguna');
 		$fields['role'] = 'pegawai';
 		$fields['status'] = 'inactive';
@@ -63,7 +63,7 @@ class Registered extends BaseController
 			]],
 			'photo' => [
 				'label' => 'photo',
-				'rules' => 'uploaded[photo]|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]',
+				'rules' => 'is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]',
 				'errors' => [
 					'max_size' => 'Ukuran file harus maksimal 2Mb',
 					'mime_in' => 'Harap masukkan file berupa photo (jpg, jpeg, png)',
@@ -80,11 +80,10 @@ class Registered extends BaseController
 
 		} else {
 			if ($fields['photo']->getName() != '') {
-
 				$fileName = 'pengguna-' . $fields['photo']->getRandomName();
 				$fields['img_user'] = $fileName;
 				$fields['photo']->move(WRITEPATH . '../public/img/user', $fileName);
-				unset($fields['photo']);
+				// unset($fields['photo']);
 			}
 
 			if ($this->user->insert($fields)) {
