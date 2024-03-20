@@ -349,10 +349,10 @@
     })
   }
 
-  function aktivasi(id_user) {
+  function reset(id_user) {
     Swal.fire({
-      title: "<?= lang("Aktivasi") ?>",
-      text: "<?= lang("Aktifkan user ini ?") ?>",
+      title: "<?= lang("Reset Password") ?>",
+      text: "<?= lang("Reset password user ini ?") ?>",
       icon: 'info',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -363,7 +363,7 @@
 
       if (result.value) {
         $.ajax({
-          url: '<?php echo base_url($controller . "/aktivasi") ?>',
+          url: '<?php echo base_url($controller . "/reset") ?>',
           type: 'post',
           data: {
             id_user: id_user
@@ -397,6 +397,55 @@
       }
     })
   }
+
+  // function aktivasi(id_user) {
+  //   Swal.fire({
+  //     title: "<?= lang("Aktivasi") ?>",
+  //     text: "<?= lang("Aktifkan user ini ?") ?>",
+  //     icon: 'info',
+  //     showCancelButton: true,
+  //     confirmButtonColor: '#3085d6',
+  //     cancelButtonColor: '#d33',
+  //     confirmButtonText: '<?= lang("Konfirmasi") ?>',
+  //     cancelButtonText: '<?= lang("Batal") ?>'
+  //   }).then((result) => {
+
+  //     if (result.value) {
+  //       $.ajax({
+  //         url: '<?php echo base_url($controller . "/aktivasi") ?>',
+  //         type: 'post',
+  //         data: {
+  //           id_user: id_user
+  //         },
+  //         dataType: 'json',
+  //         success: function(response) {
+
+  //           if (response.success === true) {
+  //             Swal.fire({
+  //               toast: true,
+  //               position: 'top-end',
+  //               icon: 'success',
+  //               title: response.messages,
+  //               showConfirmButton: false,
+  //               timer: 1500
+  //             }).then(function() {
+  //               $('#data_table').DataTable().ajax.reload(null, false).draw(false);
+  //             })
+  //           } else {
+  //             Swal.fire({
+  //               toast: false,
+  //               position: 'bottom-end',
+  //               icon: 'error',
+  //               title: response.messages,
+  //               showConfirmButton: false,
+  //               timer: 3000
+  //             })
+  //           }
+  //         }
+  //       });
+  //     }
+  //   })
+  // }
 </script>
 
 

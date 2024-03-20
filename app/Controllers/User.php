@@ -35,6 +35,17 @@ class User extends BaseController
 		return view('user', $data);
 	}
 
+	public function profile()
+	{
+
+		$data = [
+			'controller'		=> 'user',
+			'title'				=> 'Profile Pengguna'
+		];
+
+		return view('profile', $data);
+	}
+
 	public function getAll()
 	{
 		$response = $data['data'] = array();
@@ -48,7 +59,7 @@ class User extends BaseController
 			$ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 			$ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
 			$ops .= '<div class="dropdown-menu">';
-			$value->status == 'inactive' ? $ops .= '<a class="dropdown-item text-success" onClick="aktivasi(' . $value->id_user . ')"><i class="fa-solid fa-check"></i>   ' .  lang("Aktivasi")  . '</a>' : '';
+			$value->role != 'admin' ? $ops .= '<a class="dropdown-item text-success" onClick="reset(' . $value->id_user . ')"><i class="fa-solid fa-check"></i>   ' .  lang("Reset Password")  . '</a>' : '';
 			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_user . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
 			$ops .= '<div class="dropdown-divider"></div>';
 			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_user . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
@@ -88,7 +99,7 @@ class User extends BaseController
 	public function add()
 	{
 		$response = array();
-		
+
 		$fields['id_user'] = $this->request->getPost('id_user');
 		$fields['username'] = $this->request->getPost('username');
 		$fields['password'] = password_hash($this->request->getPost('password'), PASSWORD_BCRYPT);
@@ -180,20 +191,34 @@ class User extends BaseController
 
 		} else {
 
-			// if ($this->userModel->update($fields['id_user'], $fields)) {
+			if ($fields['photo']->getName() != '') {
 
-			// 	$response['success'] = true;
-			// 	$response['messages'] = lang("Berhasil perbarui data");
-			// } else {
+				//ketika file ada, menghapus file lama
+				if ($data->img_user) {
+					if (file_exists('img/user/' . $data->img_user)) {
+						unlink('img/user/' . $data->img_user);
+					}
+				}
 
-			// 	$response['success'] = false;
-			// 	$response['messages'] = lang("Gagal Perbarui data");
-			// }
+				$fileName = 'pengguna-' . $fields['photo']->getRandomName();
+				$fields['img_user'] = $fileName;
+				$fields['photo']->move(WRITEPATH . '../public/img/user', $fileName);
+			}
+
+
+			if ($this->userModel->update($fields['id_user'], $fields)) {
+				$response['success'] = true;
+				$response['messages'] = lang("Berhasil perbarui data");
+			} else {
+
+				$response['success'] = false;
+				$response['messages'] = lang("Gagal Perbarui data");
+			}
 		}
 
 		return $this->response->setJSON($response);
 	}
-	
+
 
 	public function remove()
 	{
@@ -220,12 +245,12 @@ class User extends BaseController
 		return $this->response->setJSON($response);
 	}
 
-	public function aktivasi()
+	public function reset()
 	{
 		$response = array();
 
 		$id = $this->request->getPost('id_user');
-		$field['status'] = 'active';
+		$field['password'] = password_hash('pusdatin01', PASSWORD_BCRYPT);
 
 		if ($this->userModel->update($id, $field)) {
 
@@ -237,6 +262,106 @@ class User extends BaseController
 			$response['messages'] = lang("Gagal mengaktifkan user");
 		}
 
+
+		return $this->response->setJSON($response);
+	}
+
+	public function ubahProfile()
+	{
+
+		$fields['photo'] 	= $this->request->getFile('photo');
+		$fields['id_user']	= session()->get('id_user');
+
+		$data = $this->userModel->select('img_user')->where('id_user', $fields['id_user'])->first();
+
+		$this->validation->setRules([
+			'photo' => [
+				'label' => 'photo',
+				'rules' => 'is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 2Mb',
+					'mime_in' => 'Harap masukkan file berupa photo (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa photo'
+				]
+			],
+		]);
+
+		if ($this->validation->run($fields) == FALSE) {
+
+			$response['success'] = false;
+			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
+
+		} else {
+
+			if ($fields['photo']->getName() != '') {
+
+				//ketika file ada, menghapus file lama
+				if ($data->img_user) {
+					if (file_exists('img/user/' . $data->img_user)) {
+						unlink('img/user/' . $data->img_user);
+					}
+				}
+
+				$fileName = 'pengguna-' . $fields['photo']->getRandomName();
+				$fields['img_user'] = $fileName;
+				$fields['photo']->move(WRITEPATH . '../public/img/user', $fileName);
+			}
+
+
+			if ($this->userModel->update($fields['id_user'], $fields)) {
+				$response['success'] = true;
+				$response['messages'] = lang("Berhasil perbarui data");
+			} else {
+
+				$response['success'] = false;
+				$response['messages'] = lang("Gagal Perbarui data");
+			}
+		}
+
+		return $this->response->setJSON($response);
+	}
+
+	public function ubahPassword()
+	{
+
+		$fields['password'] 				= $this->request->getPost('password');
+		$fields['konfirmasi-password']		= $this->request->getPost('konfirmasi-password');
+		// $fields['id_user']					= session()->get('id_user');
+
+		$this->validation->setRules([
+
+			'password' => ['label' => 'Password', 'rules' => 'required', 'errors' => [
+				'required'	=> 'Password harus diisi'
+			]],
+			'konfirmasi-password' => ['label' => 'konfirmasi-password', 'rules' => 'required|matches[password]', 'errors' =>
+			[
+				'required'	=> 'Konfirmasi password harus diisi',
+				'matches' => 'Konfirmasi password tidak sama'
+			]],
+		]);
+
+
+		if ($this->validation->run($fields) == FALSE) {
+
+			$response['success'] = false;
+			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
+
+		} else {
+
+			$data = [
+				'id_user'	=> session()->get('id_user'),
+				'password' 	=> password_hash($fields['password'], PASSWORD_BCRYPT)
+			];
+
+			if ($this->userModel->update($data['id_user'], $data)) {
+				$response['success'] = true;
+				$response['messages'] = lang("Berhasil perbarui data");
+			} else {
+
+				$response['success'] = false;
+				$response['messages'] = lang("Gagal Perbarui data");
+			}
+		}
 
 		return $this->response->setJSON($response);
 	}

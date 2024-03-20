@@ -5,7 +5,7 @@
       <aside class="main-sidebar sidebar-bg-dark  sidebar-color-primary shadow">
         <div class="brand-container">
           <a href="javascript:;" class="brand-link">
-            <img src="<?= session()->get('img_user') ? base_url('/img/user/'.session()->get('img_user')) : base_url('/asset/img/user.jpg') ?>" alt="GIS KESEHATAN" class="brand-image opacity-80 shadow">
+            <img src="<?= session()->get('img_user') ? base_url('/img/user/'.session()->get('img_user')) : base_url('/asset/img/user.jpg') ?>" alt="Presensi" class="brand-image opacity-80 shadow">
             <span class="brand-text fw-light">Presensi</span>
           </a>
           <a class="pushmenu mx-1" data-lte-toggle="sidebar-mini" href="javascript:;" role="button"><i class="fas fa-angle-double-left"></i></a>
