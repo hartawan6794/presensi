@@ -102,7 +102,8 @@
             <div class="col-md-12">
               <div class="form-group mb-3">
                 <label for="keterangan" class="col-form-label"> Keterangan: </label>
-                <input type="text" id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" minlength="0" maxlength="255">
+                <!-- <input type="text" id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" minlength="0" maxlength="255"> -->
+                <textarea name="keterangan" id="keterangan" class="form-control" cols="30" rows="10"></textarea>
               </div>
             </div>
           </div>
