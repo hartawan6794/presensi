@@ -70,7 +70,7 @@ class User extends BaseController
 				$value->username,
 				$value->nama_lengkap,
 				$value->role,
-				$value->status,
+				'<img src="' . base_url('/img/user/' . $value->img_user) . '" alt="' . $value->img_user . '" style="width:120px">',
 				$value->jabatan,
 				$ops
 			);

@@ -23,7 +23,7 @@
           <th>Username</th>
           <th>Nama Lengkap</th>
           <th>Role</th>
-          <th>Status</th>
+          <th>Photo Profile</th>
           <th>Jabatan</th>
 
           <th></th>
