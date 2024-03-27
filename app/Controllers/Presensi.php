@@ -35,6 +35,7 @@ class Presensi extends BaseController
 			'bulan'				=> $this->month
 		];
 
+
 		return view('presensi', $data);
 	}
 
@@ -138,8 +139,22 @@ class Presensi extends BaseController
 						// Hari libur
 						$keterangan = "Libur";
 					} else {
-						// Hari kerja
-						$keterangan = "";
+						// Periksa apakah tanggal tersebut merupakan hari libur nasional dari API
+						$tanggal_format = date('Y-m-d', strtotime($tanggal));
+						$is_holiday = false;
+						$dataKalender =  $this->kalenderApi($bulanPilihan);
+						foreach ($dataKalender as $holiday) {
+							// var_dump($tanggal_format, $holiday->holiday_date);
+							if (strtotime($holiday->holiday_date) == strtotime($tanggal_format) && $holiday->is_national_holiday) {
+								$keterangan = $holiday->holiday_name;
+								$is_holiday = true;
+								break;
+							}
+						}
+						// Jika bukan hari libur nasional, maka hari kerja
+						if (!$is_holiday) {
+							$keterangan = "";
+						}
 					}
 
 					array_push($fields, array(
@@ -149,7 +164,7 @@ class Presensi extends BaseController
 						'bulan'			=> $bulanPilihan
 					));
 				}
-				// var_dump($fields); die;
+				//  die;
 
 				// Simpan catatan presensi ke dalam tabel tbl_presensi
 				if ($this->presensiModel->insertBatch($fields)) {
@@ -228,5 +243,35 @@ class Presensi extends BaseController
 		}
 
 		return $this->response->setJSON($response);
+	}
+
+	public function kalenderApi($month = null)
+	{
+		// URL API
+		$url = 'https://api-harilibur.vercel.app/api?month=' . $month . '&year=2024';
+
+		// Inisialisasi Curl
+		$ch = curl_init();
+
+		// Set URL dan opsi lainnya
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		// Eksekusi Curl
+		$response = curl_exec($ch);
+
+		// Periksa apakah ada kesalahan
+		if (curl_errno($ch)) {
+			echo 'Error: ' . curl_error($ch);
+		}
+
+		// Tutup Curl
+		curl_close($ch);
+
+		// Ubah respons menjadi objek
+		$responseObject = json_decode($response);
+
+		// Tampilkan objek
+		return $responseObject;
 	}
 }
