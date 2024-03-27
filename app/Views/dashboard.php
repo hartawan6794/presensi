@@ -10,7 +10,7 @@
   <div class="card col-md-8 m-0">
     <div class="card-header">
       <!-- <h1>test</h1> -->
-      <h1>Proses Preperensi<img src="<?= base_url('/img/astroboy.png') ?>" alt="space_man" style="width: 60px;"></h1>
+      <h1>Proses Preperensi<img src="<?= base_url('/img/spaceman.png') ?>" alt="space_man" style="width: 60px;"></h1>
 
     </div>
     <div class="card-body">
