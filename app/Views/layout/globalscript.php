@@ -28,3 +28,5 @@
 <script src="<?= base_url("asset/plugins/datatables/Buttons-2.0.1/js/buttons.html5.min.js") ;?>" type="text/javascript"></script>
 <script src="<?= base_url("asset/plugins/datatables/Responsive-2.2.9/js/dataTables.responsive.min.js") ;?>" type="text/javascript"></script>
 <script src="<?= base_url("asset/plugins/datatables/Responsive-2.2.9/js/responsive.bootstrap5.min.js") ;?>" type="text/javascript"></script>
+<!-- Load Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
