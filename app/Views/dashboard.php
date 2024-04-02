@@ -10,13 +10,13 @@
   <div class="card col-md-8 m-0">
     <div class="card-header">
       <!-- <h1>test</h1> -->
-      <h1>Proses Preperensi<img src="<?= base_url('/img/spaceman.png') ?>" alt="space_man" style="width: 60px;"></h1>
+      <h1>Proses Preperensi Bulan <?= $bulan ?> <img src="<?= base_url('/img/spaceman.png') ?>" alt="space_man" style="width: 60px;"></h1>
 
     </div>
     <div class="card-body">
       <div class="row">
-        <div class="chart-responsive" style="height:50vh;">
-          <canvas id="pieChart"  height="40vw"></canvas>
+        <div class="chart-responsive" style="height:60vh;">
+          <canvas id="pieChart" height="40vw"></canvas>
         </div>
       </div>
       <!-- <canvas id="doughnutChart" width="400" height="400"></canvas> -->
@@ -24,6 +24,7 @@
   </div>
   <div class="card col-md-4 m-0">
     <div class="card-header">
+      <h1>Agenda Bulan <?= $bulan ?> </h1>
     </div>
   </div>
 
@@ -43,30 +44,47 @@
   $(function() {
     // Data untuk chart doughnut
 
-    var data = {
-      labels: ['Sudah input', 'Belum input', 'Libur'],
-      datasets: [{
-        label: 'My First Dataset',
-        data: [300, 50, 100],
-        backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(54, 162, 235)',
-          'rgb(255, 205, 86)'
-        ],
-        hoverOffset: 4
-      }]
-    };
+    fetchData()
 
+  })
 
-    // Konfigurasi chart
-    var config = {
+  function fetchData() {
+
+    $.ajax({
+      url: '<?= base_url("home/data") ?>', // Ganti dengan URL yang sesuai
+      method: 'GET',
+      success: function(data) {
+        // console.log(data.belum)
+        // console.log(data.terisi)
+        // console.log(data.cuti)
+        createChart(data)
+      }
+    });
+  }
+  // Fungsi untuk membuat grafik menggunakan Chart.js
+  function createChart(data) {
+
+    var ctx = document.getElementById('pieChart');
+    var myChart = new Chart(ctx, {
       type: 'doughnut',
-      data: data,
+      data: {
+        labels: ['Belum input', 'Sudah input', 'Libur'],
+        datasets: [{
+          // label: ['Belum input', 'Sudah input', 'Libur'],
+          data: [data.belum, data.terisi, data.cuti],
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)'
+          ],
+          hoverOffset: 4
+        }],
+      },
       options: {
         responsive: true,
         plugins: {
           legend: {
-            position: 'left',
+            position: 'right',
             align: 'center'
           },
           customCanvasBackgroundImage: { // plugin yang Anda definisikan sebelumnya
@@ -90,18 +108,7 @@
           }
         }
       },
-    };
-
-    // Inisialisasi chart
-    var myChart = new Chart(
-      document.getElementById('pieChart'),
-      config
-    );
-
-
-    // Mengatur ulang ukuran canvas
-    $('#pieChart').attr('width', '300');
-    $('#pieChart').attr('height', '300');
-  })
+    });
+  }
 </script>
 <?= $this->endSection() ?>
