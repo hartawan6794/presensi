@@ -30,3 +30,5 @@
 <script src="<?= base_url("asset/plugins/datatables/Responsive-2.2.9/js/responsive.bootstrap5.min.js") ;?>" type="text/javascript"></script>
 <!-- Load Chart.js library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
