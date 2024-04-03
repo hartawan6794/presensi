@@ -2,22 +2,23 @@
 
 namespace App\Controllers;
 
+use App\Models\AgendaModel;
 use App\Models\PresensiModel;
 
 class Home extends BaseController
 {
     protected $presensi;
+    protected $agenda;
 
     public function __construct()
     {
         helper('settings');
         $this->presensi         = new PresensiModel();
+        $this->agenda           = new AgendaModel();
     }
 
     public function index(): string
     {
-
-
         $data = [
             'controller'        => 'home',
             'title'             => 'Dashboard',
@@ -25,6 +26,61 @@ class Home extends BaseController
         ];
 
         return view('dashboard', $data);
+    }
+
+    public function getAgenda()
+    {
+        $response = array();
+
+        $data['data'] = array();
+
+        $bulan = date('m');
+        $result = $this->agenda->select('*')->where('agenda_bulan', $bulan)->findAll();
+
+        foreach ($result as $key => $value) {
+
+            if (session()->get('role') == 'admin') {
+                $ops = '<div class="btn-group">';
+                $ops .= '	<button type="button" class="btn btn-sm btn-info" onclick="edit(' . $value->id_agenda . ')"><i class="fa fa-edit"></i></button>';
+                $ops .= '	<button type="button" class="btn btn-sm btn-danger" onclick="remove(' . $value->id_agenda . ')"><i class="fa fa-trash"></i></button>';
+                $ops .= '</div>';
+            }else{
+                $ops = '';
+            }
+
+            $data['data'][$key] = array(
+                tgl_indo($value->created_at),
+                $value->ket_agenda,
+                $ops,
+            );
+        }
+
+        return $this->response->setJSON($data);
+    }
+
+    public function addAgenda()
+    {
+
+        $response = array();
+
+        $fields['id_agenda'] = $this->request->getPost('idAgenda');
+        $fields['ket_agenda'] = $this->request->getPost('ket_agenda');
+        $fields['agenda_bulan'] = date('m');
+        $fields['created_at'] = $this->request->getPost('tanggal');
+        $fields['created_by'] = session()->get('id_user');
+
+        // var_dump($fields);die;
+        if ($this->agenda->insert($fields)) {
+
+            $response['success'] = true;
+            $response['messages'] = 'Data has been inserted successfully';
+        } else {
+
+            $response['success'] = false;
+            $response['messages'] = 'Insertion error!';
+        }
+
+        return $this->response->setJSON($response);
     }
 
     function cekKataKunci($keterangan)
@@ -73,7 +129,5 @@ class Home extends BaseController
         $presensi['terisi'] = $terisi;
 
         return $this->response->setJSON($presensi);
-
-
     }
 }
