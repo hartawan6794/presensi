@@ -219,7 +219,7 @@ helper("settings");
 
   var urlController = '';
   var submitText = '';
-  var month = 1;
+  var month = '<?= date('m') ?>';
 
   function getUrl() {
     return urlController;
