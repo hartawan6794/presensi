@@ -23,5 +23,17 @@ class UserModel extends Model {
 	function getRole() {
 		return ['admin','pegawai'];
 	}
+
+	function countUser(){
+		return $this->db->table('tbl_user')->where('role !=', 'admin')->countAllResults();
+	}
+
+	function getUserInput($bulan = null , $belum_input = null) {
+		$sql = 'SELECT DISTINCT(id_user) AS user_input FROM tbl_presensi WHERE bulan = ?';
+		if($belum_input != null) {
+			$sql = 'SELECT id_user,role from tbl_user where id_user not IN (SELECT DISTINCT(id_user) AS user_input FROM tbl_presensi WHERE bulan = ?)';
+		}
+		return $this->db->query($sql,[$bulan]);
+	}
 	
 }

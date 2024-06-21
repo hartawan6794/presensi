@@ -1,28 +1,107 @@
+<?php
+
+use App\Models\UserModel;
+
+$this->userModel = new UserModel();
+$userCount = $this->userModel->getUserInput(date('m'))->getNumRows();
+?>
 <?= $this->extend("layout/master") ?>
+
 
 <?= $this->section("content") ?>
 
-<div class="row">
-  <h1 class="mb-3">Selamat Datang, <?= session()->get('nama_lengkap') ?></h1>
-</div>
+<?php if (session()->get('role') != 'admin') : ?>
+  <div class="row">
+    <h1 class="mb-3">Selamat Datang, <?= session()->get('nama_lengkap') ?></h1>
+  </div>
+
+<?php endif ?>
 
 <div class="row">
   <div class="card col-md-8 m-0">
-    <div class="card-header">
-      <!-- <h1>test</h1> -->
-      <h1>Proses Preperensi Bulan <?= $bulan ?> <img src="<?= base_url('/img/spaceman.png') ?>" alt="space_man" style="width: 60px;"></h1>
+    <?php if (session()->get('role') != 'admin') : ?>
+      <div class="card-header">
+        <!-- <h1>test</h1> -->
+        <h1>Proses Preperensi Bulan <?= $bulan ?> <img src="<?= base_url('/img/spaceman.png') ?>" alt="space_man" style="width: 60px;"></h1>
 
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="chart-responsive" style="height:60vh;">
-          <?php if (session()->get('role') != 'admin') : ?>
-          <canvas id="pieChart" height="40vw"></canvas>
-        <?php endif ?>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="chart-responsive" style="height:60vh;">
+            <?php if (session()->get('role') != 'admin') : ?>
+              <canvas id="pieChart" height="40vw"></canvas>
+            <?php endif ?>
+          </div>
+        </div>
+        <!-- <canvas id="doughnutChart" width="400" height="400"></canvas> -->
+      </div>
+    <?php endif ?>
+    <?php if (session()->get('role') == 'admin') : ?>
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-6">
+            <h1>Selamat Datang, <?= session()->get('nama_lengkap') ?> </h1>
+            <p>Sehat Selalu, semoga harimu selalu menyenangkan</p>
+          </div>
+          <div class="col-md-6 ">
+            <img class="float-end" src="<?= base_url('/img/dashboard.png') ?>" style="width: 200px;">
+          </div>
         </div>
       </div>
-      <!-- <canvas id="doughnutChart" width="400" height="400"></canvas> -->
-    </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?= $this->userModel->countUser() ?></h3>
+                <p>Jumlah Pengguna</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-users"></i>
+              </div>
+              <a href="<?= base_url('/user') ?>" class="small-box-footer">
+                Info Selanjutnya <i class="fas fa-arrow-circle-right"></i>
+              </a>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-box">
+              <span class="info-box-icon bg-success"><i class="fa fa-bar-chart"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">Jumlah pengguna yang sudah input di bulan ini</span>
+                <span class="info-box-number"><?= $this->userModel->countUser() ?></span>
+                <div class="progress">
+                  <div class="progress-bar bg-success" style="width: 70%"></div>
+                </div>
+                <span class="progress-description">
+                  <?= $userCount ?> dari <?= $this->userModel->countUser() ?>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <ul class="list-group">
+              <li class="list-group-item active" aria-current="true">Pengguna sudah input bulan ini</li>
+              <?php foreach ($this->userModel->getUserInput(date('m'))->getResultObject() as $key => $value) : ?>
+                <li class="list-group-item"><?= $this->userModel->select('nama_lengkap')->where('id_user', $value->user_input)->first()->nama_lengkap ?></li>
+              <?php endforeach ?>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <ul class="list-group">
+              <li class="list-group-item active list-group-item-warning" aria-current="true">Pengguna belum input bulan ini</li>
+              <?php foreach ($this->userModel->getUserInput(date('m'), 'yes')->getResultObject() as $key => $value) : if ($value->role == 'pegawai') : ?>
+                  <li class="list-group-item"><?= $this->userModel->select('nama_lengkap')->where('id_user', $value->id_user)->first()->nama_lengkap ?></li>
+              <?php endif;
+              endforeach ?>
+            </ul>
+          </div>
+        </div>
+      </div>
+    <?php endif ?>
   </div>
   <div class="card col-md-4 m-0">
     <div class="card-header">
@@ -134,6 +213,12 @@
       endDate: '<?= date("Y-m-t") ?>', // Sampai akhir bulan saat ini
       autoclose: true
     });
+
+    var userInput = <?= $userCount ?>;
+    var totalUsers = <?= $this->userModel->countUser() ?>;
+    var progressPercentage = (userInput / totalUsers) * 100;
+
+    $('.progress-bar').css('width', progressPercentage + '%');
 
   })
 
@@ -333,14 +418,22 @@
   }
   // Fungsi untuk membuat grafik menggunakan Chart.js
   function createChart(data) {
+    var labels = [];
+    var datasetLabels = [];
+    // var data = [data.belum, data.terisi, data.cuti];
+
+    if (data.belum > 0 || data.terisi > 0 || data.cuti > 0) {
+      labels = ['Belum input', 'Sudah input', 'Libur'];
+      datasetLabels = ['Belum input', 'Sudah input', 'Libur'];
+    }
 
     var ctx = document.getElementById('pieChart');
     var myChart = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['Belum input', 'Sudah input', 'Libur'],
+        labels: labels,
         datasets: [{
-          // label: ['Belum input', 'Sudah input', 'Libur'],
+          label: datasetLabels,
           data: [data.belum, data.terisi, data.cuti],
           backgroundColor: [
             'rgb(255, 99, 132)',
@@ -372,7 +465,7 @@
                 const x = left + width / 2 - image.width / 2;
                 const y = top + height / 2 - image.height / 2;
                 ctx.drawImage(this, x, y);
-                chart.update();
+                chart.render();
               });
             }
           }

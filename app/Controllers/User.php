@@ -25,6 +25,7 @@ class User extends BaseController
 	public function index()
 	{
 
+		var_dump($this->userModel->getUserInput(date('m'))->getResultObject());die;
 		$data = [
 			'controller'    	=> 'user',
 			'title'     		=> 'Pengguna',
