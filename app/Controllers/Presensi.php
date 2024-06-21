@@ -32,10 +32,11 @@ class Presensi extends BaseController
 		$data = [
 			'controller'    	=> 'presensi',
 			'title'     		=> 'Daftar Presensi',
-			'bulan'				=> $this->month
+			'bulan'				=> $this->month,
+			'bulan_ini'			=> date('m').' , '. tgl_indo(date('m')) ,
 		];
 
-
+// var_dump($data);die;
 		return view('presensi', $data);
 	}
 

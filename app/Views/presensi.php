@@ -2,12 +2,44 @@
 
 <?= $this->section("content") ?>
 
+<?php
+helper("settings");
+?>
+
+<style type="text/css">
+  .preloader {
+    position: fixed;
+    display: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.7);
+    /* background-color: #fff; */
+  }
+
+  .preloader .loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font: 14px arial;
+  }
+</style>
+
+<div class="preloader">
+  <div class="loading">
+    <img src="<?= base_url('/img/spaceman.png') ?>" width="80">
+    <p class="mt-2">Harap Tunggu</p>
+  </div>
+</div>
 <!-- Main content -->
 <div class="card">
   <div class="card-header">
     <div class="row">
       <div class="col-9 mt-2">
-        <h3 class="card-title">Presensi</h3>
+        <h3 class="card-title menu-judul">Presensi Bulan </h3>
       </div>
       <div class="col-3">
         <button type="button" style="display: none;" class="btn float-end btn-success" onclick="save()" id="btn-tambah-presensi" title="<?= lang("Tambah") ?>"> <i class="fa fa-plus"></i> <?= lang('Tambah') ?></button>
@@ -20,7 +52,7 @@
       <?php
       foreach ($bulan->bulan as $nomor => $b) { ?>
         <div class="card">
-          <button type="button" class="btn btn-info" onclick="selectMonth(<?= $nomor ?>)"><?= $nomor ?><p><?= $b ?></p></button>
+          <button type="button" class="btn btn-info" onclick="selectMonth('<?= $nomor ?>', '<?= $b ?>')"><?= $nomor ?><p><?= $b ?></p></button>
         </div>
       <?php } ?>
     </div>
@@ -131,7 +163,12 @@
 <?= $this->section("pageScript") ?>
 <script>
   // dataTables
-  var bulanValue = 1;
+  var bulanValue = '<?= $bulan_ini ?>';
+  // console.log(bulanValue);
+  var bulan = bulanValue.split(',');
+
+  $('.card-title.menu-judul').text('Presensi Bulan ' + bulan[1])
+  // bulanValue.split(',')
   $(function() {
     var table = $('#data_table').removeAttr('width').DataTable({
       "paging": true,
@@ -151,7 +188,7 @@
         "type": "POST",
         "dataType": "json",
         "data": {
-          bulan: bulanValue
+          bulan: bulan[0]
         },
         async: "true"
       },
@@ -278,17 +315,23 @@
     });
   }
 
-  function selectMonth(bulan) {
+  function selectMonth(nomor, b) {
     // Reload DataTable sebelum memanggil AJAX
-    month = bulan;
+    month = nomor;
+    // console.log(b);
+    $('.card-title.menu-judul').text('Presensi Bulan ' + b)
     $.ajax({
       url: '<?php echo base_url($controller . "/getSelectedMonth") ?>',
       type: 'post',
       data: {
-        bulan: bulan
+        bulan: nomor
       },
       dataType: 'json',
+      beforeSend: function() {
+        $(".preloader").fadeIn();
+      },
       success: function(response) {
+        $(".preloader").fadeOut();
         // console.log(response.data);
         $('#data_table').DataTable().clear();
         if (response.data.length > 0) {
@@ -327,8 +370,11 @@
             bulan: month
           },
           dataType: 'json',
+          beforeSend: function() {
+            $(".preloader").fadeIn();
+          },
           success: function(response) {
-
+            $(".preloader").fadeOut();
             if (response.success === true) {
               Swal.fire({
                 toast: true,
@@ -416,7 +462,7 @@
         bulan: bulan
       },
       dataType: 'json',
-      cache : false,
+      cache: false,
       success: function(response) {
         // window.location.href = 
 
