@@ -1,7 +1,34 @@
 <?= $this->extend("layout/master") ?>
 
 <?= $this->section("content") ?>
+<style type="text/css">
+  .preloader {
+    position: fixed;
+    display: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.7);
+    /* background-color: #fff; */
+  }
 
+  .preloader .loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font: 14px arial;
+  }
+</style>
+
+<div class="preloader">
+  <div class="loading">
+    <img src="<?= base_url('/img/spaceman.png') ?>" width="80">
+    <p class="mt-2">Harap Tunggu</p>
+  </div>
+</div>
 <!-- /.content -->
 <!-- Main content -->
 <div class="card">
@@ -71,7 +98,7 @@
   <div class="card-header">
     <div class="row">
       <div class="col-12">
-        <button type="button" class="btn float-end btn-warning " title="<?= lang("Print Pdf") ?>"> <i class="fa fa-print"></i> <?= lang('Print Pdf') ?></button>
+        <button type="button" class="btn float-end btn-warning" id="btn-cetak" title="<?= lang("Print Pdf") ?>"> <i class="fa fa-print"></i> <?= lang('Print Pdf') ?></button>
         <!-- <button type="button" class="btn float-end btn-success mx-1" title="<?= lang("Tambah") ?>"> <i class="fa fa-plus"></i> <?= lang('Tambah') ?></button> -->
       </div>
     </div>
@@ -134,9 +161,13 @@
           data: formData,
           cache: false,
           dataType: 'json',
+          beforeSend: function() {
+            $(".preloader").fadeIn();
+          },
           success: function(response) {
             // console.log(response.data);
             // if (response.status) {
+            $(".preloader").fadeOut();
 
             $('#data_table').DataTable().clear();
             if (response.data.length > 0) {
@@ -176,6 +207,41 @@
 
     })
 
+
+    $('#btn-cetak').on('click', function(e) {
+
+      var id_user = $('#user').val();
+      var bulan = $('#bulan').val();
+      $.ajax({
+        url: '<?= base_url($controller . "/cetak") ?>',
+        type: 'post',
+        data: {
+          id_user: id_user,
+          bulan: bulan
+        },
+        cache: false,
+        dataType: 'json',
+        success: function(response) {
+
+          if (response.success === true) {
+            // Create a link element
+            var link = document.createElement('a');
+            link.href = response.filePath; // The URL of the PDF file
+            link.target = '_blank'; // Open in a new tab
+            link.click();
+          } else {
+            alert(response.message);
+          }
+        },
+        statusCode: {
+          500: function() {
+            // Handle error 500 if needed
+            alert('Terjadi kesalahan internal server. Silakan coba lagi nanti.');
+          }
+          // You can add other status code handling here if needed
+        }
+      });
+    })
   })
 
   function getUrl() {
