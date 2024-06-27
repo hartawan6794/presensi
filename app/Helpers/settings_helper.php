@@ -27,7 +27,7 @@ if(!function_exists('settings')){
         // variabel pecahkan 1 = bulan
         // variabel pecahkan 2 = tahun
      
-        if(strlen($tanggal) == 2){
+        if(strlen($tanggal) <= 2){
             return $bulan[(int) $tanggal];
         }
         $pecahkan = explode('-', $tanggal);
