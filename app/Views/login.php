@@ -62,7 +62,7 @@
                                 </div>
 
                                 <button type="button" id="btn-login" class="btn btn-block btn-primary">login</button>
-
+<!-- 
                                 <span class="d-block text-left my-4 text-muted">&mdash; or login with &mdash;</span>
 
                                 <div class="social-login">
@@ -75,7 +75,7 @@
                                     <a href="#" class="google">
                                         <span class="icon-google mr-3"></span>
                                     </a>
-                                </div>
+                                </div> -->
                             </form>
                         </div>
                     </div>

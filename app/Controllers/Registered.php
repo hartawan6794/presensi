@@ -40,8 +40,7 @@ class Registered extends BaseController
 		$fields['role'] = 'pegawai';
 		$fields['status'] = 'inactive';
 		$fields['id_jabatan'] = $this->request->getPost('jabatan');
-		$fields['photo'] = $this->request->getFile('photo');
-		// var_dump($fields);
+		// var_dump($this->request->getPost());
 		// die;
 
 		$this->validation->setRules([
@@ -61,16 +60,6 @@ class Registered extends BaseController
 			'id_jabatan' => ['label' => 'Jabatan', 'rules' => 'required', 'errors' => [
 				'required'		=> 'Harap masukan jabatan anda jika masih ingin kerja'
 			]],
-			'photo' => [
-				'label' => 'photo',
-				'rules' => 'is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]',
-				'errors' => [
-					'max_size' => 'Ukuran file harus maksimal 2Mb',
-					'mime_in' => 'Harap masukkan file berupa photo (jpg, jpeg, png)',
-					'is_image' => 'Harap masukkan file berupa photo'
-				]
-			],
-
 		]);
 
 		if ($this->validation->run($fields) == FALSE) {
@@ -79,12 +68,6 @@ class Registered extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
-			if ($fields['photo']->getName() != '') {
-				$fileName = 'pengguna-' . $fields['photo']->getRandomName();
-				$fields['img_user'] = $fileName;
-				$fields['photo']->move(WRITEPATH . '../public/img/user', $fileName);
-				// unset($fields['photo']);
-			}
 
 			if ($this->user->insert($fields)) {
 

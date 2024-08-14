@@ -274,19 +274,19 @@ class User extends BaseController
 
 		$data = $this->userModel->select('img_user')->where('id_user', $fields['id_user'])->first();
 
+		// Set the validation rules
 		$this->validation->setRules([
 			'photo' => [
-				'label' => 'photo',
-				'rules' => 'is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]',
+				'label' => 'Photo',
+				'rules' => 'uploaded[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]',
 				'errors' => [
-					'max_size' => 'Ukuran file harus maksimal 2Mb',
+					'max_size' => 'Ukuran file harus maksimal 2MB',
 					'mime_in' => 'Harap masukkan file berupa photo (jpg, jpeg, png)',
-					'is_image' => 'Harap masukkan file berupa photo'
+					'uploaded' => 'Harap masukkan file berupa photo',
 				]
 			],
 		]);
-
-		if ($this->validation->run($fields) == FALSE) {
+		if (!$this->validation->withRequest($this->request)->run()) {
 
 			$response['success'] = false;
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
