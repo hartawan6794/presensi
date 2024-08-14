@@ -26,8 +26,8 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
-        // 'auth'          => AuthFilter::class,
-        // 'loginAuth'     => LoginFilter::class
+        'auth'          => AuthFilter::class,
+        'loginAuth'     => LoginFilter::class
     ];
 
     /**
@@ -71,7 +71,7 @@ class Filters extends BaseConfig
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
     public array $filters = [
-        // 'auth' => ['before' => ['index']],
-        // 'loginAuth' => ['before' => ['index']],
+        'auth' => ['before' => ['index']],
+        'loginAuth' => ['before' => ['index']],
     ];
 }
