@@ -1,7 +1,7 @@
       <!-- Main Sidebar Container -->
       <!--<aside class="main-sidebar sidebar-bg-dark sidebar-color-primary shadow">-->
       <?php helper('settings');
-      $seg = segment()->uri->getSegment(1) ?>
+      $seg = segment()->getUri()->getSegment(1) ?>
       <aside class="main-sidebar sidebar-bg-dark  sidebar-color-primary shadow">
         <div class="brand-container">
           <a href="javascript:;" class="brand-link">
