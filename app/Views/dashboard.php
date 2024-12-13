@@ -401,17 +401,12 @@ $userCount = $this->userModel->getUserInput(date('m'))->getNumRows();
     })
   }
 
-
-
   function fetchData() {
 
     $.ajax({
       url: '<?= base_url("home/data") ?>', // Ganti dengan URL yang sesuai
       method: 'GET',
       success: function(data) {
-        // console.log(data.belum)
-        // console.log(data.terisi)
-        // console.log(data.cuti)
         createChart(data)
       }
     });
@@ -420,7 +415,6 @@ $userCount = $this->userModel->getUserInput(date('m'))->getNumRows();
   function createChart(data) {
     var labels = [];
     var datasetLabels = [];
-    // var data = [data.belum, data.terisi, data.cuti];
 
     if (data.belum > 0 || data.terisi > 0 || data.cuti > 0) {
       labels = ['Belum input', 'Sudah input', 'Libur'];

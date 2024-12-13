@@ -119,7 +119,6 @@
 		// Serialize form data
 		var formData = $('#signup-form').serialize();
 
-		console.log(formData)
 		$.ajax({
 			// fixBug get url from global function only
 			// get global variable is bug!

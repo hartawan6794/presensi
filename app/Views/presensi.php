@@ -164,7 +164,6 @@ helper("settings");
 <script>
   // dataTables
   var bulanValue = '<?= $bulan_ini ?>';
-  // console.log(bulanValue);
   var bulan = bulanValue.split(',');
 
   $('.card-title.menu-judul').text('Presensi Bulan ' + bulan[1])
@@ -237,10 +236,8 @@ helper("settings");
     // Ambil data dari baris yang dipilih dan lakukan proses pengeditan
     // Tampilkan formulir kustom atau gunakan modul lain sesuai kebutuhan
     // Misalnya, Anda dapat menggunakan modal Bootstrap untuk formulir pengeditan
-    // console.log("Edit data:", data);
     // Tampilkan formulir pengeditan atau ambil tindakan lain sesuai kebutuhan
 
-    // console.log(data)
     urlController = '<?= base_url($controller . "/edit") ?>';
     submitText = '<?= lang("Perbarui") ?>';
 
@@ -318,7 +315,6 @@ helper("settings");
   function selectMonth(nomor, b) {
     // Reload DataTable sebelum memanggil AJAX
     month = nomor;
-    // console.log(b);
     $('.card-title.menu-judul').text('Presensi Bulan ' + b)
     $.ajax({
       url: '<?php echo base_url($controller . "/getSelectedMonth") ?>',
@@ -332,7 +328,6 @@ helper("settings");
       },
       success: function(response) {
         $(".preloader").fadeOut();
-        // console.log(response.data);
         $('#data_table').DataTable().clear();
         if (response.data.length > 0) {
           $('#data_table').DataTable().rows.add(response.data).draw(false);
