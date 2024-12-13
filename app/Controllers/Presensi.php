@@ -33,10 +33,10 @@ class Presensi extends BaseController
 			'controller'    	=> 'presensi',
 			'title'     		=> 'Daftar Presensi',
 			'bulan'				=> $this->month,
-			'bulan_ini'			=> date('m').' , '. tgl_indo(date('m')) ,
+			'bulan_ini'			=> date('m') . ' , ' . tgl_indo(date('m')),
 		];
 
-// var_dump($data);die;
+		// var_dump($data);die;
 		return view('presensi', $data);
 	}
 
@@ -86,99 +86,93 @@ class Presensi extends BaseController
 
 	public function add()
 	{
-		$response = array();
+		$response = [];
 
-
-		// var_dump($this->request->getPost('bulan'));die;
 		$data['bulan'] = $this->request->getPost('bulan');
 		$data['id_user'] = $this->session->get('id_user');
 
+		// Hapus data sebelumnya berdasarkan id_user dan bulan
 		$this->presensiModel->where([
-			'id_user' 		=> $data['id_user'],
-			'bulan' 		=> $data['bulan'],
+			'id_user' => $data['id_user'],
+			'bulan' => $data['bulan'],
 		])->delete();
 
+		// Validasi input
 		$this->validation->setRules([
 			'id_user' => ['label' => 'Pengguna', 'rules' => 'permit_empty|min_length[0]|max_length[4]'],
-			'bulan' => ['label' => 'Bulam', 'rules' => 'required', 'errors' => [
-				'required' => 'Harus pilih bulan terlebih dahulu'
+			'bulan' => ['label' => 'Bulan', 'rules' => 'required', 'errors' => [
+				'required' => 'Harus pilih bulan terlebih dahulu',
 			]],
 			'keterangan' => ['label' => 'Keterangan', 'rules' => 'permit_empty|min_length[0]|max_length[255]'],
-
 		]);
 
 		if ($this->validation->run($data) == FALSE) {
-
 			$response['success'] = false;
-			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
-
+			$response['messages'] = $this->validation->getErrors();
 		} else {
-			// Ambil bulan yang dipilih dari formulir
 			$bulanPilihan = $data['bulan'];
 			$tahun = date('Y');
-
-			// Konstruksi objek DateTime dengan format yang benar
 			$tanggalString = $tahun . '-' . $bulanPilihan . '-01';
-
-			$fields = [];
 
 			try {
 				$dateTime = new DateTime($tanggalString);
-				// Hitung tanggal awal dan akhir berdasarkan objek DateTime
 				$tanggalAwal = $dateTime->format('Y-m-01');
 				$tanggalAkhir = $dateTime->format('Y-m-t');
 
-				// Buat catatan presensi dalam rentang tanggal
-				for ($tanggal = $tanggalAwal; $tanggal <= $tanggalAkhir; $tanggal = date('Y-m-d', strtotime($tanggal . ' +1 day'))) {
-					// Inisialisasi fields['tgl_presensi'] di setiap iterasi
-					// $fields['tgl_presensi'] = $tanggal;
-					// $fields['id_user'] 		= '1';
+				// Ambil data kalender dengan cache
+				$cacheKey = 'kalender_' . $bulanPilihan;
+				$dataKalender = cache()->get($cacheKey);
+				if (!$dataKalender) {
+					$dataKalender = $this->kalenderApi($bulanPilihan);
+					cache()->save($cacheKey, $dataKalender, 3600); // Simpan 1 jam
+				}
 
-					// Cek jika hari Minggu atau Sabtu
+				// Optimalkan data hari libur
+				$liburNasional = [];
+				foreach ($dataKalender as $holiday) {
+					if ($holiday->is_national_holiday) {
+						$liburNasional[$holiday->holiday_date] = $holiday->holiday_name;
+					}
+				}
+
+				$fields = [];
+
+				// Iterasi tanggal
+				for ($tanggal = $tanggalAwal; $tanggal <= $tanggalAkhir; $tanggal = date('Y-m-d', strtotime($tanggal . ' +1 day'))) {
 					$hari = date('N', strtotime($tanggal));
 					if ($hari == 6 || $hari == 7) {
-						// Hari libur
 						$keterangan = "Libur";
+					} elseif (isset($liburNasional[$tanggal])) {
+						$keterangan = $liburNasional[$tanggal];
 					} else {
-						// Periksa apakah tanggal tersebut merupakan hari libur nasional dari API
-						$tanggal_format = date('Y-m-d', strtotime($tanggal));
-						$is_holiday = false;
-						$dataKalender =  $this->kalenderApi($bulanPilihan);
-						foreach ($dataKalender as $holiday) {
-							// var_dump($tanggal_format, $holiday->holiday_date);
-							if (strtotime($holiday->holiday_date) == strtotime($tanggal_format) && $holiday->is_national_holiday) {
-								$keterangan = $holiday->holiday_name;
-								$is_holiday = true;
-								break;
-							}
-						}
-						// Jika bukan hari libur nasional, maka hari kerja
-						if (!$is_holiday) {
-							$keterangan = "";
-						}
+						$keterangan = "";
 					}
 
-					array_push($fields, array(
-						'tgl_presensi' 	=> $tanggal,
-						'id_user' 		=> $data['id_user'],
-						'keterangan' 	=> $keterangan,
-						'bulan'			=> $bulanPilihan
-					));
+					$fields[] = [
+						'tgl_presensi' => $tanggal,
+						'id_user' => $data['id_user'],
+						'keterangan' => $keterangan,
+						'bulan' => $bulanPilihan,
+					];
 				}
-				//  die;
 
-				// Simpan catatan presensi ke dalam tabel tbl_presensi
-				if ($this->presensiModel->insertBatch($fields)) {
-					$response['success'] = true;
-					$response['messages'] = lang("Berhasil menambahkan data");
-				} else {
-					$response['success'] = false;
-					$response['messages'] = lang("Gagal menambahkan data");
+				// Simpan data dengan insertBatch
+				$batchSize = 100;
+				$chunks = array_chunk($fields, $batchSize);
+				foreach ($chunks as $chunk) {
+					if (!$this->presensiModel->insertBatch($chunk)) {
+						$response['success'] = false;
+						$response['messages'] = lang("Gagal menambahkan data");
+						return $this->response->setJSON($response);
+					}
 				}
-				// die;
+
+				$response['success'] = true;
+				$response['messages'] = lang("Berhasil menambahkan data");
 			} catch (Exception $e) {
-				echo 'Pesan Kesalahan: ' . $e->getMessage();
-				// Handle kesalahan sesuai kebutuhan Anda
+				log_message('error', 'Error: ' . $e->getMessage());
+				$response['success'] = false;
+				$response['messages'] = 'Terjadi kesalahan saat memproses data.';
 			}
 		}
 

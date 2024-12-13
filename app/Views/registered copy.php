@@ -74,7 +74,6 @@
 			// // var konfpassword = $('#konfpassword').val();
 			// var selectedValue = $('#jabatan').val();
 
-			// console.log(formData.serialize());
 			$.ajax({
 				// fixBug get url from global function only
 				// get global variable is bug!
@@ -88,7 +87,6 @@
 					$('#btn-signup').html('<i class="fa fa-spinner fa-spin"></i>');
 				},
 				success: function(response) {
-					// console.log(response);
 					if (response.success === true) {
 						Swal.fire({
 							icon: 'success',
@@ -103,7 +101,6 @@
 						if (response.messages instanceof Object) {
 							$.each(response.messages, function(index, value) {
 								var ele = $("#" + index);
-								// console.log(response.messages[index])
 								Swal.fire({
 									toast: false,
 									position: 'bottom-end',
@@ -154,7 +151,6 @@
 					$('#btn-signup').html('<i class="fa fa-spinner fa-spin"></i>');
 				},
 				success: function(response) {
-					// console.log(response);
 					if (response.success === true) {
 						Swal.fire({
 							icon: 'success',

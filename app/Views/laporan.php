@@ -152,7 +152,6 @@
       else {
         // Mengambil data form
         var formData = $('#data-form-search').serialize();
-        // console.log(data)
         urlController = '<?= base_url($controller . "/show") ?>';
 
         $.ajax({
@@ -165,7 +164,6 @@
             $(".preloader").fadeIn();
           },
           success: function(response) {
-            // console.log(response.data);
             // if (response.status) {
             $(".preloader").fadeOut();
 

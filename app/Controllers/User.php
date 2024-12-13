@@ -304,7 +304,7 @@ class User extends BaseController
 
 				$fileName = 'pengguna-' . $fields['photo']->getRandomName();
 				$fields['img_user'] = $fileName;
-				$fields['photo']->move(WRITEPATH . '../public/img/user', $fileName);
+				$fields['photo']->move(ROOTPATH . 'public/img/user', $fileName);
 			}
 
 

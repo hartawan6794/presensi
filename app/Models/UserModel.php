@@ -25,6 +25,10 @@ class UserModel extends Model {
 	}
 
 	function countUser(){
+		
+		// di sql server
+		//return $this->db->table('tbl_user')->countAllResults();
+		//di mysql
 		return $this->db->table('tbl_user')->where('role !=', 'admin')->countAllResults();
 	}
 

@@ -53,8 +53,6 @@
             var username = $('#username').val();
             var pass = $('#sandi').val();
 
-            // console.log(username, ' ', pass)
-
             login(username, pass);
         })
 
