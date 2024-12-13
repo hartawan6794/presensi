@@ -194,7 +194,7 @@ helper("settings");
       "columnDefs": [{
         "targets": -1, // Aksi pada kolom terakhir
         "data": null,
-        "defaultContent": "<button class='btn btn-sm btn-info edit-btn'><i class='fa-solid fa-pen-to-square'> Ubah</button>"
+        "defaultContent": "<button class='btn btn-sm btn-outline-primary rounded-pill edit-btn'><i class='fa-solid fa-pen-to-square me-1'></i>Edit</button>"
       }],
       "initComplete": function(settings, json) {
         // Check if the DataTable has data
