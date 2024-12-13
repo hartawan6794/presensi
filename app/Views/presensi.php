@@ -474,7 +474,6 @@ helper("settings");
             // Handle error 500 if needed
             alert('Terjadi kesalahan internal server. Silakan coba lagi nanti.');
           }
-          // You can add other status code handling here if needed
         }
     });
   }
