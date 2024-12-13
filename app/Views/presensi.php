@@ -459,9 +459,23 @@ helper("settings");
       dataType: 'json',
       cache: false,
       success: function(response) {
-        // window.location.href = 
-
-      }
+        if (response.success === true) {
+            // Create a link element
+            var link = document.createElement('a');
+            link.href = response.filePath; // The URL of the PDF file
+            link.target = '_blank'; // Open in a new tab
+            link.click();
+          } else {
+            alert(response.message);
+          }
+        },
+        statusCode: {
+          500: function() {
+            // Handle error 500 if needed
+            alert('Terjadi kesalahan internal server. Silakan coba lagi nanti.');
+          }
+          // You can add other status code handling here if needed
+        }
     });
   }
 </script>
