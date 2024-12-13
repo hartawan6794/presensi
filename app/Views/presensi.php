@@ -194,7 +194,7 @@ helper("settings");
       "columnDefs": [{
         "targets": -1, // Aksi pada kolom terakhir
         "data": null,
-        "defaultContent": "<button class='btn btn-sm btn-info edit-btn'><i class='fa-solid fa-pen-to-square'> Ubah</button>"
+        "defaultContent": "<button class='btn btn-sm btn-outline-primary rounded-pill edit-btn'><i class='fa-solid fa-pen-to-square me-1'></i>Edit</button>"
       }],
       "initComplete": function(settings, json) {
         // Check if the DataTable has data
@@ -459,9 +459,22 @@ helper("settings");
       dataType: 'json',
       cache: false,
       success: function(response) {
-        // window.location.href = 
-
-      }
+        if (response.success === true) {
+            // Create a link element
+            var link = document.createElement('a');
+            link.href = response.filePath; // The URL of the PDF file
+            link.target = '_blank'; // Open in a new tab
+            link.click();
+          } else {
+            alert(response.message);
+          }
+        },
+        statusCode: {
+          500: function() {
+            // Handle error 500 if needed
+            alert('Terjadi kesalahan internal server. Silakan coba lagi nanti.');
+          }
+        }
     });
   }
 </script>
